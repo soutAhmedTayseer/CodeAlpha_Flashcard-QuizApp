@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_projects/QuizState.dart';
-import 'package:flutter_projects/HomeScreen.dart';
+import 'package:flutter_projects/home_layout.dart'; // Make sure the path is correct
+
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => QuizState()),
-      ],
-      child: FlashcardQuizApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
-class FlashcardQuizApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flashcard Quiz App',
+      title: 'Flutter App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: HomeLayout(),
     );
   }
 }
