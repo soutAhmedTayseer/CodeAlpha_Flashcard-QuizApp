@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/flashcards_screen.dart';
-import 'package:flutter_projects/results_screen.dart'; // Add this import
-import 'package:flutter_projects/my_account_screen.dart'; // Add this import
+import 'package:flutter_projects/results_screen.dart';
+import 'package:flutter_projects/my_account_screen.dart'; // Import your account screen here
 
 class HomeLayout extends StatefulWidget {
   @override
@@ -13,37 +13,35 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   final List<Widget> _screens = [
     FlashcardsScreen(),
-    ResultsScreen(), // Updated
-    MyAccountScreen(), // Updated
+    ResultsScreen(),
+    MyAccountScreen(), // Your account screen
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.card_travel),
+            icon: Icon(Icons.credit_card_rounded),
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Results', // Updated
+            icon: Icon(Icons.list),
+            label: 'Results',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            label: 'My Account', // Updated
+            label: 'My Account',
           ),
         ],
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
       ),
     );
   }
