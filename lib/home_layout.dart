@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/flashcards_screen.dart';
 import 'package:flutter_projects/results_screen.dart';
-import 'package:flutter_projects/my_account_screen.dart'; // Import your account screen here
+import 'package:flutter_projects/my_account_screen.dart'; // Import your account screen
 
 class HomeLayout extends StatefulWidget {
   @override
@@ -30,7 +30,7 @@ class _HomeLayoutState extends State<HomeLayout> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card_rounded),
+            icon: Icon(Icons.credit_card),
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(

@@ -7,7 +7,7 @@ class ResultsScreen extends StatefulWidget {
 }
 
 class _ResultsScreenState extends State<ResultsScreen> {
-  List<Map<String, String>> _results = [];
+  Map<String, List<Map<String, String>>> _quizzes = {};
 
   @override
   void initState() {
@@ -17,39 +17,82 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   Future<void> _loadResults() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String>? savedResults = prefs.getStringList('results');
-    if (savedResults != null) {
-      setState(() {
-        _results = savedResults.map((result) {
-          final parts = result.split('|');
-          return {
-            'question': parts[0],
-            'userAnswer': parts[1],
-            'correctAnswer': parts[2],
-            'result': parts[3],
-          };
-        }).toList();
-      });
+    final keys = prefs.getKeys();
+    final quizzes = <String, List<Map<String, String>>>{};
+
+    for (final key in keys) {
+      if (key.startsWith('Quiz ')) {
+        final results = prefs.getStringList(key);
+        if (results != null) {
+          quizzes[key] = results.map((result) {
+            final parts = result.split('|');
+            return {
+              'question': parts[0],
+              'userAnswer': parts[1],
+              'correctAnswer': parts[2],
+              'result': parts[3],
+            };
+          }).toList();
+        }
+      }
     }
+
+    setState(() {
+      _quizzes = quizzes;
+    });
+  }
+
+  void _showQuizResults(String quizLabel) {
+    final results = _quizzes[quizLabel] ?? [];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(quizLabel),
+          content: results.isEmpty
+              ? Text('No results available.')
+              : SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: results.map((result) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Text(
+                    'Q: ${result['question']!}\n'
+                        'Your answer: ${result['userAnswer']!}\n'
+                        'Correct answer: ${result['correctAnswer']!}\n'
+                        'Result: ${result['result']!}\n',
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Results')),
-      body: _results.isEmpty
+      body: _quizzes.isEmpty
           ? Center(child: Text('No results available'))
-          : ListView.builder(
-        itemCount: _results.length,
-        itemBuilder: (context, index) {
-          final result = _results[index];
+          : ListView(
+        children: _quizzes.keys.map((quizLabel) {
           return ListTile(
-            title: Text(result['question']!),
-            subtitle: Text('Your answer: ${result['userAnswer']!}\n'
-                'Correct answer: ${result['correctAnswer']!}\n'
-                'Result: ${result['result']!}'),
+            title: Text(quizLabel),
+            onTap: () => _showQuizResults(quizLabel),
           );
-        },
+        }).toList(),
       ),
     );
   }

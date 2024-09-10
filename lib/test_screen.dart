@@ -14,13 +14,39 @@ class _TestScreenState extends State<TestScreen> {
   int _currentQuestionIndex = 0;
   int _score = 0;
   List<Map<String, String>> _flashcards = [];
-  final List<Map<String, String>> _results = [];
+  List<Map<String, String>> _results = [];
   String _userAnswer = '';
+  int _quizNumber = 1;
 
   @override
   void initState() {
     super.initState();
     _flashcards = widget.flashcards;
+    _loadQuizNumber();
+  }
+
+  Future<void> _loadQuizNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedQuizNumber = prefs.getInt('quizNumber') ?? 1;
+    setState(() {
+      _quizNumber = savedQuizNumber;
+    });
+  }
+
+  Future<void> _saveResults() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> results = _results.map((result) {
+      return '${result['question']}|${result['userAnswer']}|${result['correctAnswer']}|${result['result']}';
+    }).toList();
+
+    final quizLabel = 'Quiz $_quizNumber';
+    await prefs.setStringList(quizLabel, results);
+
+    // Increment quiz number for next quiz
+    await prefs.setInt('quizNumber', _quizNumber + 1);
+    setState(() {
+      _quizNumber++;
+    });
   }
 
   void _submitAnswer() {
@@ -37,6 +63,7 @@ class _TestScreenState extends State<TestScreen> {
         'correctAnswer': correctAnswer,
         'result': isCorrect ? 'Correct' : 'Incorrect',
       });
+
       if (_currentQuestionIndex < _flashcards.length - 1) {
         _currentQuestionIndex++;
         _userAnswer = ''; // Clear the answer for the next question
@@ -45,14 +72,6 @@ class _TestScreenState extends State<TestScreen> {
         _showResult();
       }
     });
-  }
-
-  Future<void> _saveResults() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> results = _results.map((result) {
-      return '${result['question']}|${result['userAnswer']}|${result['correctAnswer']}|${result['result']}';
-    }).toList();
-    await prefs.setStringList('results', results);
   }
 
   void _showResult() {
