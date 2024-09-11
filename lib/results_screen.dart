@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ResultsScreen extends StatefulWidget {
+  const ResultsScreen({super.key});
+
   @override
   _ResultsScreenState createState() => _ResultsScreenState();
 }
@@ -51,7 +53,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
         return AlertDialog(
           title: Text(quizLabel),
           content: results.isEmpty
-              ? Text('No results available.')
+              ? const Text('No results available.')
               : SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +65,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         'Your answer: ${result['userAnswer']!}\n'
                         'Correct answer: ${result['correctAnswer']!}\n'
                         'Result: ${result['result']!}\n',
-                    style: TextStyle(fontSize: 16.0),
+                    style:  const TextStyle(fontSize: 16.0),
                   ),
                 );
               }).toList(),
@@ -72,7 +74,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Close'),
+              child: const Text("Close"),
             ),
           ],
         );
@@ -84,7 +86,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _quizzes.isEmpty
-          ? Center(child: Text('No results available'))
+          ? const Center(child: Text('No results available'))
           : ListView(
         children: _quizzes.keys.map((quizLabel) {
           return ListTile(

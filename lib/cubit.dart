@@ -6,27 +6,6 @@ class AppCubit extends Cubit<AppStates> {
 
   static AppCubit get(context) => BlocProvider.of(context);
 
-  // User Authentication
-  void loginUser({required String email, required String password}) {
-    emit(AppLoginLoadingState());
-    // Simulate login logic, success or error:
-    try {
-      emit(AppLoginSuccessState());
-    } catch (e) {
-      emit(AppLoginErrorState());
-    }
-  }
-
-  void signupUser({required String email, required String password}) {
-    emit(AppSignupLoadingState());
-    // Simulate signup logic:
-    try {
-      emit(AppSignupSuccessState());
-    } catch (e) {
-      emit(AppSignupErrorState());
-    }
-  }
-
   // Flashcard Management
   List<Map> flashcards = [];
 

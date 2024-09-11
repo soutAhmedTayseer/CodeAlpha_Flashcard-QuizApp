@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Add this package to your pubspec.yaml
 
 class QuizResultsScreen extends StatefulWidget {
+  const QuizResultsScreen({super.key});
+
   @override
   _QuizResultsScreenState createState() => _QuizResultsScreenState();
 }
@@ -25,9 +27,9 @@ class _QuizResultsScreenState extends State<QuizResultsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Quiz Results')),
+      appBar: AppBar(title: const Text('Quiz Results')),
       body: _results.isEmpty
-          ? Center(child: Text('No quiz results available'))
+          ? const Center(child: Text('No quiz results available'))
           : ListView.builder(
         itemCount: _results.length,
         itemBuilder: (context, index) {
