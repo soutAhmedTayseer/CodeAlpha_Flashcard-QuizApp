@@ -83,7 +83,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Results')),
       body: _quizzes.isEmpty
           ? Center(child: Text('No results available'))
           : ListView(

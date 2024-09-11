@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/test_screen.dart'; // Adjust the path if needed
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math';
 
 class FlashcardsScreen extends StatefulWidget {
   @override
@@ -9,32 +10,128 @@ class FlashcardsScreen extends StatefulWidget {
 
 class _FlashcardsScreenState extends State<FlashcardsScreen> {
   List<Map<String, String>> flashcards = [];
+  Set<int> _selectedIndices = {}; // Track selected cards
+  List<String> _questions = [];
+  List<String> _answers = [];
+  Set<int> _usedIndices = {};
 
   @override
   void initState() {
     super.initState();
+    _initializeQuestionsAndAnswers();
     _loadFlashcards();
   }
 
-  Future<void> _loadFlashcards() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? savedCards = prefs.getStringList('flashcards');
-    if (savedCards != null) {
-      setState(() {
-        flashcards = savedCards.map((card) {
-          final parts = card.split('|');
-          return {'question': parts[0], 'answer': parts[1]};
-        }).toList();
-      });
-    }
+  void _initializeQuestionsAndAnswers() {
+    _questions = [
+      'What is the capital of France?',
+      'What is the largest planet in our solar system?',
+      'Who wrote "To Kill a Mockingbird"?',
+      'What is the chemical symbol for gold?',
+      'What is the speed of light?',
+      'Who painted the Mona Lisa?',
+      'What is the hardest natural substance on Earth?',
+      'What is the smallest unit of life?',
+      'What planet is known as the Red Planet?',
+      'What is the main ingredient in guacamole?',
+      'Which ocean is the largest?',
+      'What is the chemical symbol for water?',
+      'Who discovered penicillin?',
+      'What is the largest mammal?',
+      'In which year did the Titanic sink?',
+      'What is the freezing point of water in Celsius?',
+      'Who wrote the play "Romeo and Juliet"?',
+      'What is the capital of Japan?',
+      'What is the boiling point of water in Fahrenheit?',
+      'What is the largest desert in the world?',
+      'What is the longest river in the world?',
+      'What is the most spoken language in the world?',
+      'Who is known as the father of modern physics?',
+      'What is the capital of Australia?',
+      'What is the symbol for potassium on the periodic table?',
+      'What is the square root of 144?',
+      'What is the primary gas found in Earth’s atmosphere?',
+      'Who invented the telephone?',
+      'What is the largest country by land area?',
+      'What is the speed of sound in air?',
+      'What is the tallest mountain in the world?',
+      'Who wrote "The Odyssey"?',
+      'What is the primary color of the sun?',
+      'What is the main language spoken in Brazil?',
+      'What planet is known for its rings?',
+      'Who was the first man to walk on the moon?',
+      'What is the chemical formula for salt?',
+      'What is the most abundant element in the Earth’s crust?',
+      'Which planet is closest to the Sun?',
+      'What is the largest island in the world?',
+      'What is the currency of Japan?',
+      'What is the chemical symbol for iron?'
+    ];
+
+    _answers = [
+      'Paris',
+      'Jupiter',
+      'Harper Lee',
+      'Au',
+      '299,792 km/s',
+      'Leonardo da Vinci',
+      'Diamond',
+      'Cell',
+      'Mars',
+      'Avocado',
+      'Pacific Ocean',
+      'H2O',
+      'Alexander Fleming',
+      'Blue Whale',
+      '1912',
+      '0°C',
+      'William Shakespeare',
+      'Tokyo',
+      '212°F',
+      'Sahara Desert',
+      'Nile River',
+      'Mandarin',
+      'Albert Einstein',
+      'Canberra',
+      'K',
+      '12',
+      'Nitrogen',
+      'Alexander Graham Bell',
+      'Russia',
+      '343 m/s',
+      'Mount Everest',
+      'Homer',
+      'Yellow',
+      'Portuguese',
+      'Saturn',
+      'Neil Armstrong',
+      'NaCl',
+      'Oxygen',
+      'Mercury',
+      'Greenland',
+      'Yen',
+      'Fe'
+    ];
   }
 
-  Future<void> _saveFlashcards() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> savedCards = flashcards.map((card) {
-      return '${card['question']}|${card['answer']}';
-    }).toList();
-    prefs.setStringList('flashcards', savedCards);
+  String _generateUniqueRandomQuestion() {
+    if (_usedIndices.length >= _questions.length) {
+      // If all questions have been used, reset _usedIndices
+      _usedIndices.clear();
+    }
+
+    int index;
+    do {
+      index = Random().nextInt(_questions.length);
+    } while (_usedIndices.contains(index));
+
+    _usedIndices.add(index);
+    return _questions[index];
+  }
+
+  String _generateRandomAnswer(String question) {
+    final index = _questions.indexOf(question);
+    return index >= 0 ? _answers[index] : 'Unknown';
   }
 
   void _addFlashcard() {
@@ -67,9 +164,31 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                     _saveFlashcards();
                   });
                   Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Please provide both question and answer.')),
+                  );
                 }
               },
               child: Text('Add'),
+            ),
+            TextButton(
+              onPressed: () {
+                final randomQuestion = _generateUniqueRandomQuestion();
+                final randomAnswer = _generateRandomAnswer(randomQuestion);
+                if (randomQuestion != 'No more unique questions available') {
+                  setState(() {
+                    flashcards.add({'question': randomQuestion, 'answer': randomAnswer});
+                    _saveFlashcards();
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('No more unique questions available')),
+                  );
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text('Add Random'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -127,39 +246,158 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     );
   }
 
+  void _deleteSelectedFlashcards() {
+    if (_selectedIndices.isEmpty) return;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Flashcards'),
+          content: Text('Are you sure you want to delete the selected flashcards?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  // Create a list of indices to remove
+                  final indicesToRemove = _selectedIndices.toList()..sort((a, b) => b.compareTo(a));
+
+                  // Remove selected cards by index, starting from the end to avoid index shifting issues
+                  for (var index in indicesToRemove) {
+                    flashcards.removeAt(index);
+                  }
+
+                  _saveFlashcards();
+                  _selectedIndices.clear();
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Delete'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onCardLongPress(int index) {
+    setState(() {
+      if (_selectedIndices.contains(index)) {
+        _selectedIndices.remove(index);
+      } else {
+        _selectedIndices.add(index);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Flashcards')),
+      appBar: AppBar(
+        title: Text('Flashcards'),
+        actions: [
+          if (_selectedIndices.isNotEmpty)
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: _deleteSelectedFlashcards,
+            ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               itemCount: flashcards.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(flashcards[index]['question']!),
-                  subtitle: Text(flashcards[index]['answer']!),
-                  onTap: () => _editFlashcard(index),
+                final isSelected = _selectedIndices.contains(index);
+                return Dismissible(
+                  key: Key(flashcards[index]['question']!),
+                  onDismissed: (direction) {
+                    setState(() {
+                      flashcards.removeAt(index);
+                      _saveFlashcards();
+                    });
+                  },
+                  background: Container(color: Colors.red),
+                  child: Card(
+                    margin: EdgeInsets.all(8.0),
+                    child: ListTile(
+                      title: Text(flashcards[index]['question']!),
+                      subtitle: Text(flashcards[index]['answer']!),
+                      onTap: () => _editFlashcard(index),
+                      onLongPress: () => _onCardLongPress(index),
+                      tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
           ),
-          ElevatedButton(
-            onPressed: _addFlashcard,
-            child: Text('Add Flashcard'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TestScreen(flashcards: flashcards)),
-              );
-            },
-            child: Text('Start Quiz'),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: _addFlashcard,
+                  child: Text('Add Flashcard'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // Same color as TestScreen buttons
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TestScreen(flashcards: flashcards),
+                      ),
+                    );
+                  },
+                  child: Text('Start Quiz'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white, // Same color as TestScreen buttons
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _saveFlashcards() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> savedCards = flashcards.map((card) {
+      return '${card['question']}|${card['answer']}';
+    }).toList();
+    prefs.setStringList('flashcards', savedCards);
+  }
+
+  Future<void> _loadFlashcards() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? savedCards = prefs.getStringList('flashcards');
+    if (savedCards != null) {
+      setState(() {
+        flashcards = savedCards.map((card) {
+          final parts = card.split('|');
+          return {'question': parts[0], 'answer': parts[1]};
+        }).toList();
+      });
+    }
   }
 }
