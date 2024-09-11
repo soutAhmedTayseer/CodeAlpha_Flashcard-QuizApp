@@ -209,6 +209,35 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     );
   }
 
+  void _deleteAllFlashcards() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete all flashcards?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  flashcards.clear();
+                  _saveFlashcards();
+                  _filterFlashcards(); // Reapply filtering after deleting all flashcards
+                });
+              },
+              child: const Text('Delete All'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _onCardLongPress(int index) {
     setState(() {
       if (_selectedIndices.contains(index)) {
@@ -235,13 +264,17 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flashcards'),
+        title: const Text('Hello There !'),
         actions: [
           if (_selectedIndices.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: _deleteSelectedFlashcards,
             ),
+          IconButton(
+            icon: const Icon(Icons.delete_sweep),
+            onPressed: _deleteAllFlashcards,
+          ),
         ],
       ),
       body: Column(

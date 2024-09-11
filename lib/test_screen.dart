@@ -201,7 +201,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: Colors.black45, // Dark background color
+        backgroundColor: Colors.white, // Dark background color
         body: Column(
           children: [
             // Timer and Quiz Info Card
@@ -431,36 +431,42 @@ class ResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Dark background color
-      appBar: AppBar(
-        title: const Text('Results'),
-        backgroundColor: Colors.grey[800], // Dark app bar color
-      ),
+      backgroundColor: Colors.white, // Dark background color
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const SizedBox(height: 20),
+
             Text(
               'Your Score: $score',
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.orange), // Dark orange text color
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 itemCount: results.length,
                 itemBuilder: (context, index) {
                   final result = results[index];
+                  final isCorrect = result['result'] == 'Correct'; // Determine if the answer is correct
+                  final answerColor = isCorrect ? Colors.green : Colors.red; // Set color based on correctness
+
                   return Card(
                     color: Colors.grey[800], // Light grey card color
                     elevation: 4,
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
-                      title: Text(result['question']!, style: const TextStyle(color: Colors.orange)), // Dark orange text color
+                      title: Text(
+                        result['question']!,
+                        style: const TextStyle(color: Colors.orange), // Fixed orange color for questions
+                      ),
                       subtitle: Text(
                         'Your Answer: ${result['userAnswer']}\nCorrect Answer: ${result['correctAnswer']}\nResult: ${result['result']}',
-                        style: const TextStyle(fontSize: 14, color: Colors.orange), // Dark orange text color
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: answerColor, // Conditional color for answers
+                        ),
                       ),
                     ),
                   );

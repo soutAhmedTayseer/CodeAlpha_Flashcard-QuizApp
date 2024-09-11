@@ -14,7 +14,7 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   final List<Widget> _screens = [
     const FlashcardsScreen(),
-    ResultsScreen(),
+    const ResultsScreen(),
   ];
 
   @override
@@ -35,7 +35,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: 'Results',
+            label: 'History',
           ),
         ],
       ),
