@@ -4,7 +4,17 @@ import 'package:flutter_projects/states.dart';
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
 
-  static AppCubit get(context) => BlocProvider.of(context);
+  int _currentIndex = 0;
+
+  int get currentIndex => _currentIndex;
+
+  void changeIndex(int index) {
+    _currentIndex = index;
+    emit(AppIndexChangedState(index));
+  }
+
+  // To access the AppCubit instance from the context
+  static AppCubit get(context) => BlocProvider.of<AppCubit>(context);
 
   // Flashcard Management
   List<Map> flashcards = [];

@@ -4,42 +4,121 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
 class FlashcardsScreen extends StatefulWidget {
-  const FlashcardsScreen({super.key});
-
   @override
   _FlashcardsScreenState createState() => _FlashcardsScreenState();
 }
 
 class _FlashcardsScreenState extends State<FlashcardsScreen> {
   List<Map<String, String>> flashcards = [];
-  List<Map<String, String>> filteredFlashcards = [];
-  final Set<int> _selectedIndices = {}; // Track selected cards
+  List<Map<String, String>> _filteredFlashcards = [];
+  Set<int> _selectedIndices = {}; // Track selected cards
   List<String> _questions = [];
   List<String> _answers = [];
-  final Set<int> _usedIndices = {};
-  final Map<int, Map<String, String>> _deletedFlashcard = {}; // Track deleted flashcards
-  final TextEditingController _searchController = TextEditingController(); // Controller for search input
+  Set<int> _usedIndices = {};
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _initializeQuestionsAndAnswers();
     _loadFlashcards();
-    _searchController.addListener(_filterFlashcards); // Listen to search input changes
   }
 
   void _initializeQuestionsAndAnswers() {
     _questions = [
-      // Your questions here
+      'What is the capital of France?',
+      'What is the largest planet in our solar system?',
+      'Who wrote "To Kill a Mockingbird"?',
+      'What is the chemical symbol for gold?',
+      'What is the speed of light?',
+      'Who painted the Mona Lisa?',
+      'What is the hardest natural substance on Earth?',
+      'What is the smallest unit of life?',
+      'What planet is known as the Red Planet?',
+      'What is the main ingredient in guacamole?',
+      'Which ocean is the largest?',
+      'What is the chemical symbol for water?',
+      'Who discovered penicillin?',
+      'What is the largest mammal?',
+      'In which year did the Titanic sink?',
+      'What is the freezing point of water in Celsius?',
+      'Who wrote the play "Romeo and Juliet"?',
+      'What is the capital of Japan?',
+      'What is the boiling point of water in Fahrenheit?',
+      'What is the largest desert in the world?',
+      'What is the longest river in the world?',
+      'What is the most spoken language in the world?',
+      'Who is known as the father of modern physics?',
+      'What is the capital of Australia?',
+      'What is the symbol for potassium on the periodic table?',
+      'What is the square root of 144?',
+      'What is the primary gas found in Earth’s atmosphere?',
+      'Who invented the telephone?',
+      'What is the largest country by land area?',
+      'What is the speed of sound in air?',
+      'What is the tallest mountain in the world?',
+      'Who wrote "The Odyssey"?',
+      'What is the primary color of the sun?',
+      'What is the main language spoken in Brazil?',
+      'What planet is known for its rings?',
+      'Who was the first man to walk on the moon?',
+      'What is the chemical formula for salt?',
+      'What is the most abundant element in the Earth’s crust?',
+      'Which planet is closest to the Sun?',
+      'What is the largest island in the world?',
+      'What is the currency of Japan?',
+      'What is the chemical symbol for iron?'
     ];
 
     _answers = [
-      // Your answers here
+      'Paris',
+      'Jupiter',
+      'Harper Lee',
+      'Au',
+      '299,792 km/s',
+      'Leonardo da Vinci',
+      'Diamond',
+      'Cell',
+      'Mars',
+      'Avocado',
+      'Pacific Ocean',
+      'H2O',
+      'Alexander Fleming',
+      'Blue Whale',
+      '1912',
+      '0°C',
+      'William Shakespeare',
+      'Tokyo',
+      '212°F',
+      'Sahara Desert',
+      'Nile River',
+      'Mandarin',
+      'Albert Einstein',
+      'Canberra',
+      'K',
+      '12',
+      'Nitrogen',
+      'Alexander Graham Bell',
+      'Russia',
+      '343 m/s',
+      'Mount Everest',
+      'Homer',
+      'Yellow',
+      'Portuguese',
+      'Saturn',
+      'Neil Armstrong',
+      'NaCl',
+      'Oxygen',
+      'Mercury',
+      'Greenland',
+      'Yen',
+      'Fe'
     ];
   }
 
   String _generateUniqueRandomQuestion() {
     if (_usedIndices.length >= _questions.length) {
+      // If all questions have been used, reset _usedIndices
       _usedIndices.clear();
     }
 
@@ -65,18 +144,20 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
         String answer = '';
         return AlertDialog(
           title: const Text('Add Flashcard'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'Question'),
-                onChanged: (value) => question = value,
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Answer'),
-                onChanged: (value) => answer = value,
-              ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: const InputDecoration(labelText: 'Question'),
+                  onChanged: (value) => question = value,
+                ),
+                TextField(
+                  decoration: const InputDecoration(labelText: 'Answer'),
+                  onChanged: (value) => answer = value,
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -85,7 +166,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   setState(() {
                     flashcards.add({'question': question, 'answer': answer});
                     _saveFlashcards();
-                    _filterFlashcards(); // Reapply filtering after adding a flashcard
+                    _updateFilteredFlashcards();
                   });
                   Navigator.of(context).pop();
                 } else {
@@ -104,7 +185,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   setState(() {
                     flashcards.add({'question': randomQuestion, 'answer': randomAnswer});
                     _saveFlashcards();
-                    _filterFlashcards(); // Reapply filtering after adding a flashcard
+                    _updateFilteredFlashcards();
                   });
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -133,20 +214,22 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
         String answer = flashcards[index]['answer']!;
         return AlertDialog(
           title: const Text('Edit Flashcard'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: const InputDecoration(labelText: 'Question'),
-                onChanged: (value) => question = value,
-                controller: TextEditingController(text: question),
-              ),
-              TextField(
-                decoration: const InputDecoration(labelText: 'Answer'),
-                onChanged: (value) => answer = value,
-                controller: TextEditingController(text: answer),
-              ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: const InputDecoration(labelText: 'Question'),
+                  onChanged: (value) => question = value,
+                  controller: TextEditingController(text: question),
+                ),
+                TextField(
+                  decoration: const InputDecoration(labelText: 'Answer'),
+                  onChanged: (value) => answer = value,
+                  controller: TextEditingController(text: answer),
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -155,7 +238,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   setState(() {
                     flashcards[index] = {'question': question, 'answer': answer};
                     _saveFlashcards();
-                    _filterFlashcards(); // Reapply filtering after editing a flashcard
+                    _updateFilteredFlashcards();
                   });
                   Navigator.of(context).pop();
                 }
@@ -186,13 +269,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
               onPressed: () {
                 setState(() {
                   final indicesToRemove = _selectedIndices.toList()..sort((a, b) => b.compareTo(a));
-
                   for (var index in indicesToRemove) {
                     flashcards.removeAt(index);
                   }
-
                   _saveFlashcards();
-                  _filterFlashcards(); // Reapply filtering after deleting flashcards
+                  _updateFilteredFlashcards();
                   _selectedIndices.clear();
                 });
                 Navigator.of(context).pop();
@@ -209,28 +290,28 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     );
   }
 
-  void _deleteAllFlashcards() async {
+  void _deleteAllFlashcards() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirm Deletion'),
+          title: const Text('Delete All Flashcards'),
           content: const Text('Are you sure you want to delete all flashcards?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
                 setState(() {
                   flashcards.clear();
                   _saveFlashcards();
-                  _filterFlashcards(); // Reapply filtering after deleting all flashcards
+                  _updateFilteredFlashcards();
                 });
+                Navigator.of(context).pop();
               },
               child: const Text('Delete All'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -238,24 +319,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     );
   }
 
-  void _onCardLongPress(int index) {
+  void _updateFilteredFlashcards() {
     setState(() {
-      if (_selectedIndices.contains(index)) {
-        _selectedIndices.remove(index);
-      } else {
-        _selectedIndices.add(index);
-      }
-    });
-  }
-
-  // Filter the flashcards based on the search input
-  void _filterFlashcards() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      filteredFlashcards = flashcards.where((flashcard) {
-        final question = flashcard['question']!.toLowerCase();
-        final answer = flashcard['answer']!.toLowerCase();
-        return question.contains(query) || answer.contains(query);
+      _filteredFlashcards = flashcards.where((card) {
+        return card['question']!.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            card['answer']!.toLowerCase().contains(_searchQuery.toLowerCase());
       }).toList();
     });
   }
@@ -279,37 +347,37 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
       ),
       body: Column(
         children: [
-          // Search bar
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: 'Search',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                prefixIcon: Icon(Icons.search),
               ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                  _updateFilteredFlashcards();
+                });
+              },
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: filteredFlashcards.isEmpty ? flashcards.length : filteredFlashcards.length,
+              itemCount: _filteredFlashcards.length,
               itemBuilder: (context, index) {
-                final currentFlashcards = filteredFlashcards.isEmpty ? flashcards : filteredFlashcards;
                 final isSelected = _selectedIndices.contains(index);
                 return Dismissible(
-                  key: Key(currentFlashcards[index]['question']!),
+                  key: Key(_filteredFlashcards[index]['question']!),
+                  direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    _deletedFlashcard[index] = currentFlashcards[index];
-
+                    final removedCard = _filteredFlashcards[index];
                     setState(() {
-                      currentFlashcards.removeAt(index);
+                      _filteredFlashcards.removeAt(index);
+                      flashcards.remove(removedCard);
                       _saveFlashcards();
-                      _filterFlashcards(); // Reapply filtering after deleting a flashcard
                     });
-
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: const Text('Flashcard deleted'),
@@ -317,33 +385,24 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                           label: 'Undo',
                           onPressed: () {
                             setState(() {
-                              flashcards.insert(index, _deletedFlashcard[index]!);
+                              _filteredFlashcards.insert(index, removedCard);
+                              flashcards.add(removedCard);
                               _saveFlashcards();
-                              _filterFlashcards(); // Reapply filtering after undoing delete
                             });
-                            _deletedFlashcard.remove(index);
                           },
                         ),
                       ),
                     );
                   },
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: const Icon(Icons.delete_forever, color: Colors.white),
-                  ),
+                  background: Container(color: Colors.red),
                   child: Card(
                     margin: const EdgeInsets.all(8.0),
                     child: ListTile(
-                      title: Text(currentFlashcards[index]['question']!),
-                      subtitle: Text(currentFlashcards[index]['answer']!),
+                      title: Text(_filteredFlashcards[index]['question']!),
+                      subtitle: Text(_filteredFlashcards[index]['answer']!),
                       onTap: () => _editFlashcard(index),
                       onLongPress: () => _onCardLongPress(index),
                       tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
-                      trailing: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                      ),
                     ),
                   ),
                 );
@@ -355,18 +414,17 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton.icon(
+                ElevatedButton(
                   onPressed: _addFlashcard,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Flashcard'),
+                  child: const Text('Add Flashcard'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[700], // Adjust color as needed
+                    backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
-                ElevatedButton.icon(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -375,10 +433,9 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.quiz),
-                  label: const Text('Start Quiz'),
+                  child: const Text('Start Quiz'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[700], // Adjust color as needed
+                    backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -409,8 +466,18 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
           final parts = card.split('|');
           return {'question': parts[0], 'answer': parts[1]};
         }).toList();
-        filteredFlashcards = flashcards; // Initialize filtered list
+        _updateFilteredFlashcards();
       });
     }
+  }
+
+  void _onCardLongPress(int index) {
+    setState(() {
+      if (_selectedIndices.contains(index)) {
+        _selectedIndices.remove(index);
+      } else {
+        _selectedIndices.add(index);
+      }
+    });
   }
 }
