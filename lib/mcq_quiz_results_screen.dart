@@ -9,13 +9,13 @@ class ResultScreen extends StatelessWidget {
   final Map<int, String> correctAnswers;
 
   const ResultScreen({
-    Key? key,
+    super.key,
     required this.score,
     required this.totalQuestions,
     required this.questions, // List of questions
     required this.selectedAnswers,
     required this.correctAnswers,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,6 @@ class ResultScreen extends StatelessWidget {
                   final selectedAnswer = selectedAnswers[questionIndex];
                   final correctAnswer = correctAnswers[questionIndex];
                   final questionText = questions[questionIndex];
-                  final isCorrect = selectedAnswer == correctAnswer;
 
                   return Card(
                     color: Colors.grey[800],

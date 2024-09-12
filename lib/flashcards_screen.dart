@@ -11,10 +11,10 @@ class FlashcardsScreen extends StatefulWidget {
 class _FlashcardsScreenState extends State<FlashcardsScreen> {
   List<Map<String, String>> flashcards = [];
   List<Map<String, String>> _filteredFlashcards = [];
-  Set<int> _selectedIndices = {}; // Track selected cards
+  final Set<int> _selectedIndices = {}; // Track selected cards
   List<String> _questions = [];
   List<String> _answers = [];
-  Set<int> _usedIndices = {};
+  final Set<int> _usedIndices = {};
   String _searchQuery = '';
 
   @override
@@ -416,13 +416,13 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
               children: [
                 ElevatedButton(
                   onPressed: _addFlashcard,
-                  child: const Text('Add Flashcard'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
+                  child: const Text('Add Flashcard'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -433,13 +433,13 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                       ),
                     );
                   },
-                  child: const Text('Start Quiz'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
+                  child: const Text('Start Quiz'),
                 ),
               ],
             ),

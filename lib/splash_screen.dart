@@ -9,7 +9,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: 'assets/images/flashcard_logo.png', // Add your splash image here
-      nextScreen:  HomeLayout(),
+      nextScreen:  const HomeLayout(),
       splashTransition: SplashTransition.fadeTransition,
       backgroundColor: Colors.blueAccent,
     );

@@ -12,7 +12,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
   Map<String, List<Map<String, String>>> _quizzes = {};
   Map<String, List<Map<String, String>>> _filteredQuizzes = {};
   final TextEditingController _searchController = TextEditingController();
-  Set<String> _selectedQuizzes = {};
+  final Set<String> _selectedQuizzes = {};
   bool _isSelecting = false;
 
   @override
@@ -218,7 +218,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text("Confirm Deletion"),
-          content: Text("Are you sure you want to delete the selected quizzes?"),
+          content: const Text("Are you sure you want to delete the selected quizzes?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -278,7 +278,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.all(8.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,

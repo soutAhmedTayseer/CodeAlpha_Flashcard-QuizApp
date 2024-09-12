@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects/mcq_quiz_results_screen.dart';
 import 'dart:async';
 import 'mcq_questions.dart';
-import 'dart:math';
 
 class MCQQuizScreen extends StatefulWidget {
   final List<Question> questions;
@@ -17,7 +16,7 @@ class MCQQuizScreen extends StatefulWidget {
 class _MCQQuizScreenState extends State<MCQQuizScreen> {
   late List<Question> _shuffledQuestions; // To store the shuffled questions
   int _currentQuestionIndex = 0;
-  Map<int, String?> _selectedAnswers = {}; // Store selected answers
+  final Map<int, String?> _selectedAnswers = {}; // Store selected answers
   late List<String?> _currentOptions;
   late String _currentQuestion;
   Timer? _timer;
@@ -38,7 +37,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (_remainingTime == 0) {
         _timer?.cancel();
         _submitQuiz();
@@ -60,7 +59,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   @override
   Widget build(BuildContext context) {
     if (_shuffledQuestions.isEmpty) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: Colors.white,
         body: Center(
           child: Text(
@@ -91,7 +90,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                   child: Row(
                     children: [
                       // Timer on the left
-                      Container(
+                      SizedBox(
                         width: 60,
                         height: 60,
                         child: Stack(
@@ -105,7 +104,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                             Center(
                               child: Text(
                                 '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
-                                style: TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
+                                style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
@@ -119,12 +118,12 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                           children: [
                             Text(
                               widget.category,
-                              style: TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold),
+                              style: const TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'Question ${_currentQuestionIndex + 1} of ${_shuffledQuestions.length}',
-                              style: TextStyle(color: Colors.orange, fontSize: 16),
+                              style: const TextStyle(color: Colors.orange, fontSize: 16),
                             ),
                           ],
                         ),
@@ -151,7 +150,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                           child: Center(
                             child: Text(
                               _currentQuestion,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orange,
@@ -172,7 +171,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                               return ListTile(
                                 title: Text(
                                   option!,
-                                  style: TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                                 leading: Radio<String?>(
                                   value: option,
@@ -190,7 +189,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                   });
                                 },
                               );
-                            }).toList(),
+                            }),
                           ],
                         ),
                       ),
@@ -317,7 +316,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text(
+              child: const Text(
                 'Continue',
                 style: TextStyle(color: Colors.red),
               ),
