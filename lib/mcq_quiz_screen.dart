@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects/mcq_quiz_results_screen.dart';
 import 'dart:async';
 import 'mcq_questions.dart';
+import 'dart:math';
 
 class MCQQuizScreen extends StatefulWidget {
   final List<Question> questions;
@@ -14,6 +15,7 @@ class MCQQuizScreen extends StatefulWidget {
 }
 
 class _MCQQuizScreenState extends State<MCQQuizScreen> {
+  late List<Question> _shuffledQuestions; // To store the shuffled questions
   int _currentQuestionIndex = 0;
   Map<int, String?> _selectedAnswers = {}; // Store selected answers
   late List<String?> _currentOptions;
@@ -24,6 +26,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   @override
   void initState() {
     super.initState();
+    _shuffledQuestions = List.from(widget.questions)..shuffle(); // Shuffle questions
     _startTimer();
     _setCurrentQuestion();
   }
@@ -48,15 +51,15 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   }
 
   void _setCurrentQuestion() {
-    if (widget.questions.isEmpty) return;
-    final question = widget.questions[_currentQuestionIndex];
+    if (_shuffledQuestions.isEmpty) return;
+    final question = _shuffledQuestions[_currentQuestionIndex];
     _currentQuestion = question.question;
     _currentOptions = _generateOptions(question);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.questions.isEmpty) {
+    if (_shuffledQuestions.isEmpty) {
       return Scaffold(
         backgroundColor: Colors.white,
         body: Center(
@@ -68,59 +71,183 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
       );
     }
 
-    final question = widget.questions[_currentQuestionIndex];
     final options = _currentOptions;
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          // Timer and Quiz Info Card
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Colors.grey[800],
-              elevation: 4,
-              margin: const EdgeInsets.only(top: 30.0),
+      body: WillPopScope(
+        onWillPop: _onWillPop,
+        child: Column(
+          children: [
+            // Timer and Quiz Info Card
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: Colors.grey[800],
+                elevation: 4,
+                margin: const EdgeInsets.only(top: 30.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      // Timer on the left
+                      Container(
+                        width: 60,
+                        height: 60,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CircularProgressIndicator(
+                              value: _remainingTime / 300,
+                              backgroundColor: Colors.grey[700],
+                              color: Colors.orange,
+                            ),
+                            Center(
+                              child: Text(
+                                '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
+                                style: TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // Category and Question Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.category,
+                              style: TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Question ${_currentQuestionIndex + 1} of ${_shuffledQuestions.length}',
+                              style: TextStyle(color: Colors.orange, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Centered Content area with scrollable questions and answers
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Question text Card
+                      Card(
+                        color: Colors.grey[800],
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Text(
+                              _currentQuestion,
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // Options in a single card
+                      Card(
+                        color: Colors.grey[800],
+                        elevation: 4,
+                        child: Column(
+                          children: [
+                            ...options.map((option) {
+                              return ListTile(
+                                title: Text(
+                                  option!,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                leading: Radio<String?>(
+                                  value: option,
+                                  groupValue: _selectedAnswers[_currentQuestionIndex],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedAnswers[_currentQuestionIndex] = value;
+                                    });
+                                  },
+                                  activeColor: Colors.orange,
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    _selectedAnswers[_currentQuestionIndex] = option;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Navigation Buttons
+            Align(
+              alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Circular Progress Bar for Timer
-                        Container(
-                          width: 50,
-                          height: 50,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              CircularProgressIndicator(
-                                value: _remainingTime / 300,
-                                backgroundColor: Colors.grey[700],
-                                color: Colors.orange,
+                        if (_currentQuestionIndex > 0)
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  _currentQuestionIndex--;
+                                  _setCurrentQuestion();
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey[800],
                               ),
-                              Center(
-                                child: Text(
-                                  '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
-                                  style: TextStyle(color: Colors.orange, fontSize: 16),
-                                ),
-                              ),
-                            ],
+                              child: const Text('Previous', style: TextStyle(color: Colors.orange)),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            widget.category,
-                            style: TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+                          child: ElevatedButton(
+                            onPressed: _currentQuestionIndex < _shuffledQuestions.length - 1
+                                ? () {
+                              setState(() {
+                                _currentQuestionIndex++;
+                                _setCurrentQuestion();
+                              });
+                            }
+                                : () {
+                              _showSubmitConfirmation();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[800],
+                            ),
+                            child: Text(
+                              _currentQuestionIndex < _shuffledQuestions.length - 1
+                                  ? 'Next'
+                                  : 'Submit',
+                              style: const TextStyle(color: Colors.orange),
+                            ),
                           ),
-                        ),
-                        Spacer(),
-                        Text(
-                          'Question ${_currentQuestionIndex + 1} of ${widget.questions.length}',
-                          style: TextStyle(color: Colors.orange, fontSize: 16),
                         ),
                       ],
                     ),
@@ -128,127 +255,8 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                 ),
               ),
             ),
-          ),
-          // Centered Content area with scrollable questions and answers
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Question text Card
-                  Card(
-                    color: Colors.grey[800],
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Text(
-                          _currentQuestion,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  // Options in a single card
-                  Card(
-                    color: Colors.grey[800],
-                    elevation: 4,
-                    child: Column(
-                      children: [
-                        ...options.map((option) {
-                          return ListTile(
-                            title: Text(
-                              option!,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            leading: Radio<String?>(
-                              value: option,
-                              groupValue: _selectedAnswers[_currentQuestionIndex],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedAnswers[_currentQuestionIndex] = value;
-                                });
-                              },
-                              activeColor: Colors.orange,
-                            ),
-                            onTap: () {
-                              setState(() {
-                                _selectedAnswers[_currentQuestionIndex] = option;
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // Navigation Buttons
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (_currentQuestionIndex > 0)
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _currentQuestionIndex--;
-                                _setCurrentQuestion();
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[800],
-                            ),
-                            child: const Text('Previous', style: TextStyle(color: Colors.orange)),
-                          ),
-                        ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: _currentQuestionIndex < widget.questions.length - 1
-                              ? () {
-                            setState(() {
-                              _currentQuestionIndex++;
-                              _setCurrentQuestion();
-                            });
-                          }
-                              : () {
-                            _submitQuiz();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[800],
-                          ),
-                          child: Text(
-                            _currentQuestionIndex < widget.questions.length - 1
-                                ? 'Next'
-                                : 'Submit',
-                            style: const TextStyle(color: Colors.orange),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -263,8 +271,8 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
     int score = 0;
     final correctAnswers = <int, String>{};
 
-    for (int i = 0; i < widget.questions.length; i++) {
-      final question = widget.questions[i];
+    for (int i = 0; i < _shuffledQuestions.length; i++) {
+      final question = _shuffledQuestions[i];
       final selectedAnswer = _selectedAnswers[i];
       if (selectedAnswer == question.correctAnswer) {
         score++;
@@ -277,7 +285,8 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
       MaterialPageRoute(
         builder: (context) => ResultScreen(
           score: score,
-          totalQuestions: widget.questions.length,
+          totalQuestions: _shuffledQuestions.length,
+          questions: _shuffledQuestions.map((q) => q.question).toList(), // Pass questions list
           selectedAnswers: _selectedAnswers,
           correctAnswers: correctAnswers,
         ),
@@ -286,4 +295,63 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   }
 
 
+  Future<bool> _onWillPop() async {
+    return (await _showExitConfirmation()) ?? false;
+  }
+
+  Future<bool?> _showExitConfirmation() {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Exit Quiz'),
+          content: const Text('If you exit now, your answers will not be saved. Do you want to continue?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(
+                'Continue',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSubmitConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Submit Quiz'),
+          content: const Text('Are you sure you want to submit the quiz?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _submitQuiz();
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
