@@ -22,9 +22,9 @@ class _HomeLayoutState extends State<HomeLayout> {
           return IndexedStack(
             index: context.read<AppCubit>().currentIndex,
             children: [
-              FlashcardsScreen(),
-              const CategoriesScreen(), // Your new screen
-              const ResultsScreen(),
+               FlashcardsScreen(),
+               CategoriesScreen(), // Your new screen
+               const ResultsScreen(),
             ],
           );
         },
@@ -38,7 +38,7 @@ class _HomeLayoutState extends State<HomeLayout> {
             label: 'Flashcards',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_card_rounded),
+            icon: Icon(Icons.workspace_premium_outlined),
             label: 'Categories',
           ),
           BottomNavigationBarItem(
