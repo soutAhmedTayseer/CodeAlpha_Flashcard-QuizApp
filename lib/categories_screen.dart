@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projects/mcq_questions.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'mcq_quiz_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
   CategoriesScreen({super.key});
@@ -110,7 +112,11 @@ class QuestionsScreen extends StatefulWidget {
   final String categoryTitle;
   final int categoryId;
 
-  const QuestionsScreen({required this.categoryTitle, required this.categoryId, super.key});
+  const QuestionsScreen({
+    required this.categoryTitle,
+    required this.categoryId,
+    super.key,
+  });
 
   @override
   _QuestionsScreenState createState() => _QuestionsScreenState();
@@ -156,6 +162,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           }
 
           final questions = snapshot.data!;
+
           return Column(
             children: [
               Expanded(
@@ -190,9 +197,14 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle Start Quiz action here
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Quiz Started')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MCQQuizScreen(
+                          questions: questions,
+                          category: widget.categoryTitle, // Pass category here
+                        ),
+                      ),
                     );
                   },
                   child: const Text('Start Quiz'),
@@ -202,20 +214,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
           );
         },
       ),
-    );
-  }
-}
-
-class Question {
-  final String question;
-  final String correctAnswer;
-
-  Question({required this.question, required this.correctAnswer});
-
-  factory Question.fromJson(Map<String, dynamic> json) {
-    return Question(
-      question: json['question'],
-      correctAnswer: json['correct_answer'],
     );
   }
 }

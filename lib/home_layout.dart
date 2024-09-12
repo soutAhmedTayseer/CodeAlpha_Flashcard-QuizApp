@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_projects/flashcards_screen.dart';
 import 'package:flutter_projects/categories_screen.dart';
-import 'package:flutter_projects/results_screen.dart';
+import 'package:flutter_projects/History_screen.dart';
 import 'package:flutter_projects/states.dart';
 import 'cubit.dart';
 
