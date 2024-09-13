@@ -4,24 +4,37 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'mcq_quiz_screen.dart';
 
-class CategoriesScreen extends StatelessWidget {
+class CategoriesScreen extends StatefulWidget {
   CategoriesScreen({super.key});
 
+  @override
+  _CategoriesScreenState createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
   final List<Map<String, dynamic>> categories = [
-    {'title': 'General Knowledge', 'id': 9, 'image': 'assets/images/1.jpg'},
-    {'title': 'Books', 'id': 10, 'image': 'assets/images/1.jpg'},
-    {'title': 'Film', 'id': 11, 'image': 'assets/images/1.jpg'},
-    {'title': 'Music', 'id': 12, 'image': 'assets/images/1.jpg'},
-    {'title': 'Science', 'id': 17, 'image': 'assets/images/1.jpg'},
-    {'title': 'Geography', 'id': 22, 'image': 'assets/images/1.jpg'},
-    {'title': 'History', 'id': 23, 'image': 'assets/images/1.jpg'},
-    {'title': 'Politics', 'id': 24, 'image': 'assets/images/1.jpg'},
-    {'title': 'Sports', 'id': 21, 'image': 'assets/images/1.jpg'},
-    {'title': 'Animals', 'id': 27, 'image': 'assets/images/1.jpg'},
+    {'title': 'General Knowledge', 'id': 9, 'image': 'assets/images/general knowledge.jpeg'},
+    {'title': 'Books', 'id': 10, 'image': 'assets/images/books.jpeg'},
+    {'title': 'Film', 'id': 11, 'image': 'assets/images/film.jpeg'},
+    {'title': 'Music', 'id': 12, 'image': 'assets/images/music.jpeg'},
+    {'title': 'Science', 'id': 17, 'image': 'assets/images/science.jpeg'},
+    {'title': 'Geography', 'id': 22, 'image': 'assets/images/geography.jpeg'},
+    {'title': 'History', 'id': 23, 'image': 'assets/images/history.jpeg'},
+    {'title': 'Politics', 'id': 24, 'image': 'assets/images/politics.jpeg'},
+    {'title': 'Sports', 'id': 21, 'image': 'assets/images/sports.jpeg'},
+    {'title': 'Animals', 'id': 27, 'image': 'assets/images/animals'},
   ];
+
+  String searchQuery = ''; // To hold the search query
 
   @override
   Widget build(BuildContext context) {
+    // Filter categories based on search query
+    final filteredCategories = categories
+        .where((category) =>
+        category['title'].toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
@@ -39,7 +52,9 @@ class CategoriesScreen extends StatelessWidget {
                 prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (value) {
-                // Implement search functionality here
+                setState(() {
+                  searchQuery = value; // Update the search query
+                });
               },
             ),
           ),
@@ -47,7 +62,7 @@ class CategoriesScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
-                itemCount: categories.length,
+                itemCount: filteredCategories.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Two items per row
                   crossAxisSpacing: 16, // Spacing between columns
@@ -55,14 +70,15 @@ class CategoriesScreen extends StatelessWidget {
                   childAspectRatio: 1, // To make them equal width and height
                 ),
                 itemBuilder: (BuildContext context, int index) {
+                  final category = filteredCategories[index];
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => QuestionsScreen(
-                            categoryTitle: categories[index]['title']!,
-                            categoryId: categories[index]['id']!,
+                            categoryTitle: category['title'],
+                            categoryId: category['id'],
                           ),
                         ),
                       );
@@ -71,13 +87,14 @@ class CategoriesScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                         image: DecorationImage(
-                          image: AssetImage(categories[index]['image']!),
+                          image: AssetImage(category['image']!),
                           fit: BoxFit.cover,
                         ),
                       ),
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
+                          width: double.infinity,
                           padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.6),
@@ -87,15 +104,24 @@ class CategoriesScreen extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            categories[index]['title']!,
+                            category['title'],
+                            textAlign: TextAlign.center, // Center-aligns the text
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(2, 2), // Creates shadow in bottom-right direction
+                                  blurRadius: 3.0,      // Adds blur to the shadow
+                                  color: Colors.black54, // Shadow color
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
+
                     ),
                   );
                 },
