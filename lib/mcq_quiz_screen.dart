@@ -5,7 +5,7 @@ import 'mcq_questions.dart';
 
 class MCQQuizScreen extends StatefulWidget {
   final List<Question> questions;
-  final String category; // Added category parameter
+  final String category;
 
   const MCQQuizScreen({super.key, required this.questions, required this.category});
 
@@ -14,18 +14,19 @@ class MCQQuizScreen extends StatefulWidget {
 }
 
 class _MCQQuizScreenState extends State<MCQQuizScreen> {
-  late List<Question> _shuffledQuestions; // To store the shuffled questions
+  late List<Question> _shuffledQuestions;
   int _currentQuestionIndex = 0;
-  final Map<int, String?> _selectedAnswers = {}; // Store selected answers
+  final Map<int, String?> _selectedAnswers = {};
   late List<String?> _currentOptions;
   late String _currentQuestion;
+  late String _currentDifficulty;
   Timer? _timer;
-  int _remainingTime = 300; // 5 minutes timer
+  int _remainingTime = 300;
 
   @override
   void initState() {
     super.initState();
-    _shuffledQuestions = List.from(widget.questions)..shuffle(); // Shuffle questions
+    _shuffledQuestions = List.from(widget.questions)..shuffle();
     _startTimer();
     _setCurrentQuestion();
   }
@@ -53,11 +54,16 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
     if (_shuffledQuestions.isEmpty) return;
     final question = _shuffledQuestions[_currentQuestionIndex];
     _currentQuestion = question.question;
+    _currentDifficulty = question.difficulty;
     _currentOptions = _generateOptions(question);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size and padding for responsiveness
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 600;
+
     if (_shuffledQuestions.isEmpty) {
       return const Scaffold(
         backgroundColor: Colors.white,
@@ -76,183 +82,220 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
       backgroundColor: Colors.white,
       body: WillPopScope(
         onWillPop: _onWillPop,
-        child: Column(
+        child: Stack(
           children: [
-            // Timer and Quiz Info Card
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                color: Colors.grey[800],
-                elevation: 4,
-                margin: const EdgeInsets.only(top: 30.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      // Timer on the left
-                      SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            CircularProgressIndicator(
-                              value: _remainingTime / 300,
-                              backgroundColor: Colors.grey[700],
-                              color: Colors.orange,
-                            ),
-                            Center(
-                              child: Text(
-                                '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
-                                style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      // Category and Question Info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.category,
-                              style: const TextStyle(color: Colors.orange, fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Question ${_currentQuestionIndex + 1} of ${_shuffledQuestions.length}',
-                              style: const TextStyle(color: Colors.orange, fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Centered Content area with scrollable questions and answers
-            Expanded(
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Question text Card
-                      Card(
-                        color: Colors.grey[800],
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Center(
-                            child: Text(
-                              _currentQuestion,
-                              style: const TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange,
-                              ),
-                              textAlign: TextAlign.center,
+            Column(
+              children: [
+                // Timer and Quiz Info Card
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.grey[800],
+                    elevation: 4,
+                    margin: const EdgeInsets.only(top: 30.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          // Timer on the left
+                          SizedBox(
+                            width: isSmallScreen ? 50 : 60,
+                            height: isSmallScreen ? 50 : 60,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: _remainingTime / 300,
+                                  backgroundColor: Colors.grey[700],
+                                  color: Colors.orange,
+                                ),
+                                Center(
+                                  child: Text(
+                                    '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
+                                    style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          const SizedBox(width: 16),
+                          // Category and Question Info
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.category,
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: isSmallScreen ? 18 : 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Question ${_currentQuestionIndex + 1} of ${_shuffledQuestions.length}',
+                                  style: const TextStyle(color: Colors.orange, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Difficulty Container - Positioned under the first card
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,  // Aligns the container to the right
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
+                      decoration: BoxDecoration(
+                        color: _getDifficultyColor(_currentDifficulty),
+                        borderRadius: BorderRadius.circular(12.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            offset: const Offset(0, 4),
+                            blurRadius: 4.0,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        _currentDifficulty.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      // Options in a single card
-                      Card(
-                        color: Colors.grey[800],
-                        elevation: 4,
-                        child: Column(
-                          children: [
-                            ...options.map((option) {
-                              return ListTile(
-                                title: Text(
-                                  option!,
-                                  style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                // Centered Content area with scrollable questions and answers
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Question text Card
+                          Card(
+                            color: Colors.grey[800],
+                            elevation: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: Text(
+                                  _currentQuestion,
+                                  style: TextStyle(
+                                    fontSize: isSmallScreen ? 18 : 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                leading: Radio<String?>(
-                                  value: option,
-                                  groupValue: _selectedAnswers[_currentQuestionIndex],
-                                  onChanged: (value) {
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          // Options in a single card
+                          Card(
+                            color: Colors.grey[800],
+                            elevation: 4,
+                            child: Column(
+                              children: [
+                                ...options.map((option) {
+                                  return ListTile(
+                                    title: Text(
+                                      option!,
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                    leading: Radio<String?>(
+                                      value: option,
+                                      groupValue: _selectedAnswers[_currentQuestionIndex],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedAnswers[_currentQuestionIndex] = value;
+                                        });
+                                      },
+                                      activeColor: Colors.orange,
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedAnswers[_currentQuestionIndex] = option;
+                                      });
+                                    },
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Navigation Buttons
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (_currentQuestionIndex > 0)
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
                                     setState(() {
-                                      _selectedAnswers[_currentQuestionIndex] = value;
+                                      _currentQuestionIndex--;
+                                      _setCurrentQuestion();
                                     });
                                   },
-                                  activeColor: Colors.orange,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey[800],
+                                  ),
+                                  child: const Text('Previous', style: TextStyle(color: Colors.orange)),
                                 ),
-                                onTap: () {
-                                  setState(() {
-                                    _selectedAnswers[_currentQuestionIndex] = option;
-                                  });
-                                },
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Navigation Buttons
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (_currentQuestionIndex > 0)
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _currentQuestionIndex--;
-                                  _setCurrentQuestion();
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[800],
                               ),
-                              child: const Text('Previous', style: TextStyle(color: Colors.orange)),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: _currentQuestionIndex < _shuffledQuestions.length - 1
+                                    ? () {
+                                  setState(() {
+                                    _currentQuestionIndex++;
+                                    _setCurrentQuestion();
+                                  });
+                                }
+                                    : () {
+                                  _showSubmitConfirmation();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey[800],
+                                ),
+                                child: Text(
+                                  _currentQuestionIndex < _shuffledQuestions.length - 1
+                                      ? 'Next'
+                                      : 'Submit',
+                                  style: const TextStyle(color: Colors.orange),
+                                ),
+                              ),
                             ),
-                          ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: _currentQuestionIndex < _shuffledQuestions.length - 1
-                                ? () {
-                              setState(() {
-                                _currentQuestionIndex++;
-                                _setCurrentQuestion();
-                              });
-                            }
-                                : () {
-                              _showSubmitConfirmation();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[800],
-                            ),
-                            child: Text(
-                              _currentQuestionIndex < _shuffledQuestions.length - 1
-                                  ? 'Next'
-                                  : 'Submit',
-                              style: const TextStyle(color: Colors.orange),
-                            ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -263,7 +306,20 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   List<String?> _generateOptions(Question question) {
     final options = <String?>[question.correctAnswer];
     options.addAll(question.incorrectAnswers);
-    return options..shuffle(); // Shuffle options for better quiz experience
+    return options..shuffle();
+  }
+
+  Color _getDifficultyColor(String difficulty) {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return Colors.green;
+      case 'medium':
+        return Colors.yellow[700]!;
+      case 'hard':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 
   void _submitQuiz() {
@@ -285,14 +341,13 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
         builder: (context) => ResultScreen(
           score: score,
           totalQuestions: _shuffledQuestions.length,
-          questions: _shuffledQuestions.map((q) => q.question).toList(), // Pass questions list
+          questions: _shuffledQuestions.map((q) => q.question).toList(),
           selectedAnswers: _selectedAnswers,
           correctAnswers: correctAnswers,
         ),
       ),
     );
   }
-
 
   Future<bool> _onWillPop() async {
     return (await _showExitConfirmation()) ?? false;
