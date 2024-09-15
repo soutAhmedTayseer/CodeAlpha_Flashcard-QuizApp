@@ -22,7 +22,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     {'title': 'History', 'id': 23, 'image': 'assets/images/history.jpeg'},
     {'title': 'Politics', 'id': 24, 'image': 'assets/images/politics.jpeg'},
     {'title': 'Sports', 'id': 21, 'image': 'assets/images/sports.jpeg'},
-    {'title': 'Animals', 'id': 27, 'image': 'assets/images/animals'},
+    {'title': 'Animals', 'id': 27, 'image': 'assets/images/animals.jpeg'},
   ];
 
   String searchQuery = ''; // To hold the search query
@@ -36,94 +36,106 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         .toList();
 
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                labelText: 'Search',
-                prefixIcon: const Icon(Icons.search),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value; // Update the search query
-                });
-              },
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background home3.jpeg',
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                itemCount: filteredCategories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Two items per row
-                  crossAxisSpacing: 16, // Spacing between columns
-                  mainAxisSpacing: 16, // Spacing between rows
-                  childAspectRatio: 1, // To make them equal width and height
+          // Content
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    labelText: 'Search',
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value; // Update the search query
+                    });
+                  },
                 ),
-                itemBuilder: (BuildContext context, int index) {
-                  final category = filteredCategories[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => QuestionsScreen(
-                            categoryTitle: category['title'],
-                            categoryId: category['id'],
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GridView.builder(
+                    itemCount: filteredCategories.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Two items per row
+                      crossAxisSpacing: 16, // Spacing between columns
+                      mainAxisSpacing: 16, // Spacing between rows
+                      childAspectRatio: 1, // To make them equal width and height
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      final category = filteredCategories[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QuestionsScreen(
+                                categoryTitle: category['title'],
+                                categoryId: category['id'],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            image: DecorationImage(
+                              image: AssetImage(category['image']!),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
+                                ),
+                              ),
+                              child: Text(
+                                category['title'],
+                                textAlign: TextAlign.center, // Center-aligns the text
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(2, 2), // Creates shadow in bottom-right direction
+                                      blurRadius: 3.0,      // Adds blur to the shadow
+                                      color: Colors.black54, // Shadow color
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        image: DecorationImage(
-                          image: AssetImage(category['image']!),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.6),
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(16),
-                              bottomRight: Radius.circular(16),
-                            ),
-                          ),
-                          child: Text(
-                            category['title'],
-                            textAlign: TextAlign.center, // Center-aligns the text
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  offset: Offset(2, 2), // Creates shadow in bottom-right direction
-                                  blurRadius: 3.0,      // Adds blur to the shadow
-                                  color: Colors.black54, // Shadow color
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    ),
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -173,70 +185,83 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       appBar: AppBar(
         title: Text(widget.categoryTitle),
       ),
-      body: FutureBuilder<List<Question>>(
-        future: _questions,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('Failed to load questions'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No questions available'));
-          }
+      body: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background home3.jpeg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          // Content
+          FutureBuilder<List<Question>>(
+            future: _questions,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return const Center(child: Text('Failed to load questions'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No questions available'));
+              }
 
-          final questions = snapshot.data!;
+              final questions = snapshot.data!;
 
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: questions.length,
-                  itemBuilder: (context, index) {
-                    final question = questions[index];
-                    return Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              question.question,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: questions.length,
+                      itemBuilder: (context, index) {
+                        final question = questions[index];
+                        return Card(
+                          margin: const EdgeInsets.all(8.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  question.question,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text("Answer: ${question.correctAnswer}"),
+                              ],
                             ),
-                            const SizedBox(height: 8),
-                            Text("Answer: ${question.correctAnswer}"),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MCQQuizScreen(
-                          questions: questions,
-                          category: widget.categoryTitle, // Pass category here
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('Start Quiz'),
-                ),
-              ),
-            ],
-          );
-        },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MCQQuizScreen(
+                              questions: questions,
+                              category: widget.categoryTitle, // Pass category here
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text('Start Quiz'),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 }
+

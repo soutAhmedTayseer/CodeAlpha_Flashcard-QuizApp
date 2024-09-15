@@ -12,3 +12,5 @@ class AppIndexChangedState extends AppStates {
   final int index;
   AppIndexChangedState(this.index);
 }
+
+class AppThemeChangedState extends AppStates {}

@@ -22,71 +22,80 @@ class ResultScreen extends StatelessWidget {
     _saveQuizResults();
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              'Your Score: $score out of $totalQuestions',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.orange,
-              ),
-              textAlign: TextAlign.center,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/q2.jpeg',
+              fit: BoxFit.cover,
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: totalQuestions,
-                itemBuilder: (context, index) {
-                  final questionIndex = index;
-                  final selectedAnswer = selectedAnswers[questionIndex];
-                  final correctAnswer = correctAnswers[questionIndex];
-                  final questionText = questions[questionIndex];
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  'Your Score: $score out of $totalQuestions',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: totalQuestions,
+                    itemBuilder: (context, index) {
+                      final questionIndex = index;
+                      final selectedAnswer = selectedAnswers[questionIndex];
+                      final correctAnswer = correctAnswers[questionIndex];
+                      final questionText = questions[questionIndex];
 
-                  return Card(
-                    color: Colors.grey[800],
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ListTile(
-                      title: Text(
-                        'Question ${questionIndex + 1}: $questionText',
-                        style: const TextStyle(
-                          color: Colors.orange, // Set question color to orange
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Your Answer: ${selectedAnswer ?? 'No selected answer'}',
-                            style: TextStyle(
-                              color: selectedAnswer == correctAnswer
-                                  ? Colors.green // Set your answer color to green if correct
-                                  : selectedAnswer == null
-                                  ? Colors.red
-                                  : Colors.red, // Set your answer color to red if not correct
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Correct Answer: $correctAnswer',
+                      return Card(
+                        color: Colors.grey[800],
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ListTile(
+                          title: Text(
+                            'Question ${questionIndex + 1}: $questionText',
                             style: const TextStyle(
-                              color: Colors.green, // Set correct answer color to green
+                              color: Colors.white
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Your Answer: ${selectedAnswer ?? 'No selected answer'}',
+                                style: TextStyle(
+                                  color: selectedAnswer == correctAnswer
+                                      ? Colors.green // Set your answer color to green if correct
+                                      : selectedAnswer == null
+                                      ? Colors.red
+                                      : Colors.red, // Set your answer color to red if not correct
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Correct Answer: $correctAnswer',
+                                style: const TextStyle(
+                                  color: Colors.green, // Set correct answer color to green
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

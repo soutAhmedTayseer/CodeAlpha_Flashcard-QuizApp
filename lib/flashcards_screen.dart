@@ -290,35 +290,6 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     );
   }
 
-  void _deleteAllFlashcards() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete All Flashcards'),
-          content: const Text('Are you sure you want to delete all flashcards?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  flashcards.clear();
-                  _saveFlashcards();
-                  _updateFilteredFlashcards();
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Delete All'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _updateFilteredFlashcards() {
     setState(() {
       _filteredFlashcards = flashcards.where((card) {
@@ -331,106 +302,116 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                labelText: 'Search',
-                prefixIcon: const Icon(Icons.search),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                  _updateFilteredFlashcards();
-                });
-              },
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background home3.jpeg',
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredFlashcards.length,
-              itemBuilder: (context, index) {
-                final isSelected = _selectedIndices.contains(index);
-                return Dismissible(
-                  key: Key(_filteredFlashcards[index]['question']!),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    final removedCard = _filteredFlashcards[index];
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    labelText: 'Search',
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                  ),
+                  onChanged: (value) {
                     setState(() {
-                      _filteredFlashcards.removeAt(index);
-                      flashcards.remove(removedCard);
-                      _saveFlashcards();
+                      _searchQuery = value;
+                      _updateFilteredFlashcards();
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('Flashcard deleted'),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () {
-                            setState(() {
-                              _filteredFlashcards.insert(index, removedCard);
-                              flashcards.add(removedCard);
-                              _saveFlashcards();
-                            });
-                          },
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _filteredFlashcards.length,
+                  itemBuilder: (context, index) {
+                    final isSelected = _selectedIndices.contains(index);
+                    return Dismissible(
+                      key: Key(_filteredFlashcards[index]['question']!),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) {
+                        final removedCard = _filteredFlashcards[index];
+                        setState(() {
+                          _filteredFlashcards.removeAt(index);
+                          flashcards.remove(removedCard);
+                          _saveFlashcards();
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Flashcard deleted'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                setState(() {
+                                  _filteredFlashcards.insert(index, removedCard);
+                                  flashcards.add(removedCard);
+                                  _saveFlashcards();
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      background: Container(color: Colors.red),
+                      child: Card(
+                        margin: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: Text(_filteredFlashcards[index]['question']!),
+                          subtitle: Text(_filteredFlashcards[index]['answer']!),
+                          onTap: () => _editFlashcard(index),
+                          tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
                         ),
                       ),
                     );
                   },
-                  background: Container(color: Colors.red),
-                  child: Card(
-                    margin: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Text(_filteredFlashcards[index]['question']!),
-                      subtitle: Text(_filteredFlashcards[index]['answer']!),
-                      onTap: () => _editFlashcard(index),
-                      onLongPress: () => _onCardLongPress(index),
-                      tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: _addFlashcard,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text('Add Flashcard'),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TestScreen(flashcards: flashcards),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _addFlashcard,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      child: const Text('Add Flashcard'),
                     ),
-                  ),
-                  child: const Text('Start Quiz'),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TestScreen(flashcards: flashcards),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text('Start Quiz'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -459,13 +440,5 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     }
   }
 
-  void _onCardLongPress(int index) {
-    setState(() {
-      if (_selectedIndices.contains(index)) {
-        _selectedIndices.remove(index);
-      } else {
-        _selectedIndices.add(index);
-      }
-    });
-  }
+
 }

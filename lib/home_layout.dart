@@ -16,86 +16,86 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-      ),
-      body: BlocBuilder<AppCubit, AppStates>(
-        builder: (context, state) {
-          return IndexedStack(
-            index: context.read<AppCubit>().currentIndex,
-            children: [
-              FlashcardsScreen(),
-              CategoriesScreen(),
-               const HistoryScreen(),
-            ],
-          );
-        },
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.orange,
+    return BlocBuilder<AppCubit, AppStates>(
+      builder: (context, state) {
+        final appCubit = AppCubit.get(context);
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: appCubit.currentTheme, // Use the themeData getter
+          home: Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'Quiz App',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
-              child: Row(
-                children: [
-                  Icon(Icons.settings, size: 40, color: Colors.white),
-                  SizedBox(width: 16),
-                  Text('Settings', style: TextStyle(fontSize: 24, color: Colors.white)),
+              centerTitle: true, // Centers the title
+              actions: [
+                IconButton(
+                  icon: Icon(appCubit.isDark ? Icons.brightness_3 : Icons.wb_sunny),
+                  onPressed: () {
+                    appCubit.toggleTheme();
+                  },
+                ),
+              ],
+            ),
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/background home.jpeg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                IndexedStack(
+                  index: appCubit.currentIndex,
+                  children: [
+                    FlashcardsScreen(),
+                    CategoriesScreen(),
+                    const HistoryScreen(),
+                  ],
+                ),
+              ],
+            ),
+            drawer: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: const <Widget>[
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.settings, size: 40, color: Colors.white),
+                        SizedBox(width: 16),
+                        Text('Settings', style: TextStyle(fontSize: 24, color: Colors.white)),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.account_circle),
-            //   title: const Text('Profile'),
-            //   onTap: () {
-            //     // Handle profile navigation
-            //   },
-            // ),
-            // ListTile(
-            //   leading: const Icon(Icons.notifications),
-            //   title: const Text('Notifications'),
-            //   onTap: () {
-            //     // Handle notifications navigation
-            //   },
-            // ),
-            // ListTile(
-            //   leading: const Icon(Icons.help),
-            //   title: const Text('Help'),
-            //   onTap: () {
-            //     // Handle help navigation
-            //   },
-            // ),
-            // ListTile(
-            //   leading: const Icon(Icons.info),
-            //   title: const Text('About'),
-            //   onTap: () {
-            //     // Handle about navigation
-            //   },
-            // ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: context.watch<AppCubit>().currentIndex,
-        onTap: (index) => context.read<AppCubit>().changeIndex(index),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card),
-            label: 'Flashcards',
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: appCubit.currentIndex,
+              onTap: (index) => appCubit.changeIndex(index),
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.credit_card),
+                  label: 'Flashcards',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.workspace_premium_outlined),
+                  label: 'Categories',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.history),
+                  label: 'History',
+                ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.workspace_premium_outlined),
-            label: 'Categories',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

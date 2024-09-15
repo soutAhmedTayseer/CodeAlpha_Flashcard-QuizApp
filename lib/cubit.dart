@@ -1,38 +1,30 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_projects/states.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
 
-  int _currentIndex = 0;
+  static AppCubit get(BuildContext context) => BlocProvider.of<AppCubit>(context);
 
+  // Index for bottom navigation
+  int _currentIndex = 0;
   int get currentIndex => _currentIndex;
 
+  // Toggle between dark and light mode
+  bool isDark = false;
+
+  // Switch index in BottomNavigationBar
   void changeIndex(int index) {
     _currentIndex = index;
     emit(AppIndexChangedState(index));
   }
 
-  // To access the AppCubit instance from the context
-  static AppCubit get(context) => BlocProvider.of<AppCubit>(context);
-
-  // Flashcard Management
-  List<Map> flashcards = [];
-
-  void addFlashcard({required String question, required String answer}) {
-    flashcards.add({'question': question, 'answer': answer});
-    emit(AppAddFlashcardState());
+  // Toggle Theme Mode
+  void toggleTheme() {
+    isDark = !isDark;
+    emit(AppThemeChangedState());
   }
 
-  void getFlashcards() {
-    emit(AppGetFlashcardsState());
-  }
-
-  // Quiz Logic
-  int correctAnswers = 0;
-
-  void submitQuiz(List<bool> answers) {
-    correctAnswers = answers.where((answer) => answer).length;
-    emit(AppQuizCompleteState());
-  }
+  ThemeData get currentTheme => isDark ? ThemeData.dark() : ThemeData.light();
 }

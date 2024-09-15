@@ -245,70 +245,76 @@ class _ResultsScreenState extends State<HistoryScreen> {
     );
 
     return Scaffold(
-
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Search',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
+          // Background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background home3.jpeg',
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(8.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                childAspectRatio: 1.0,
-              ),
-              itemCount: sortedQuizzes.keys.length,
-              itemBuilder: (context, index) {
-                final quizLabel = sortedQuizzes.keys.toList()[index];
-                return GestureDetector(
-                  onTap: () {
-                    if (!_isSelecting) {
-                      _showQuizResults(quizLabel);
-                    }
-                  },
-                  onLongPress: () {
-                    setState(() {
-                      _isSelecting = true;
-                      _toggleSelection(quizLabel);
-                    });
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+          // Content
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    color: _selectedQuizzes.contains(quizLabel)
-                        ? Colors.blueAccent
-                        : Colors.white,
-                    child: Center(
-                      child: Text(
-                        quizLabel,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: _selectedQuizzes.contains(quizLabel)
-                              ? Colors.white
-                              : Colors.black,
+                    filled: true,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    childAspectRatio: 1.0,
+                  ),
+                  itemCount: sortedQuizzes.keys.length,
+                  itemBuilder: (context, index) {
+                    final quizLabel = sortedQuizzes.keys.toList()[index];
+                    return GestureDetector(
+                      onTap: () {
+                        if (!_isSelecting) {
+                          _showQuizResults(quizLabel);
+                        }
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        color: _selectedQuizzes.contains(quizLabel)
+                            ? Colors.blueAccent
+                            : Colors.white,
+                        child: Center(
+                          child: Text(
+                            quizLabel,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: _selectedQuizzes.contains(quizLabel)
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
