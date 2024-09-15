@@ -5,10 +5,10 @@ class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
   @override
-  _ResultsScreenState createState() => _ResultsScreenState();
+  _HistoryScreenState createState() => _HistoryScreenState();
 }
 
-class _ResultsScreenState extends State<HistoryScreen> {
+class _HistoryScreenState extends State<HistoryScreen> {
   Map<String, List<Map<String, String>>> _quizzes = {};
   Map<String, List<Map<String, String>>> _filteredQuizzes = {};
   final TextEditingController _searchController = TextEditingController();
@@ -38,7 +38,7 @@ class _ResultsScreenState extends State<HistoryScreen> {
               'userAnswer': parts[1],
               'correctAnswer': parts[2],
               'result': parts[3],
-              'date': parts.length > 4 ? parts[4] : '', // Ensure date is safe
+              'date': parts.length > 4 ? parts[4] : '',
             };
           }).toList();
         }
@@ -47,7 +47,7 @@ class _ResultsScreenState extends State<HistoryScreen> {
 
     setState(() {
       _quizzes = quizzes;
-      _filteredQuizzes = quizzes; // Initialize filtered quizzes
+      _filteredQuizzes = quizzes;
     });
   }
 
@@ -71,7 +71,6 @@ class _ResultsScreenState extends State<HistoryScreen> {
       _quizzes.remove(quizLabel);
     }
 
-    // Renumber quizzes after deletion
     _renumberQuizzes();
 
     setState(() {
@@ -89,7 +88,6 @@ class _ResultsScreenState extends State<HistoryScreen> {
       prefs.remove(key);
     }
 
-    // Clear quizzes and renumber if needed
     setState(() {
       _quizzes.clear();
       _filteredQuizzes.clear();
@@ -113,15 +111,14 @@ class _ResultsScreenState extends State<HistoryScreen> {
             'userAnswer': parts[1],
             'correctAnswer': parts[2],
             'result': parts[3],
-            'date': parts.length > 4 ? parts[4] : '', // Ensure date is safe
+            'date': parts.length > 4 ? parts[4] : '',
           };
         }).toList();
         counter++;
       }
     }
 
-    // Update SharedPreferences with new keys
-    await prefs.clear(); // Clear all keys
+    await prefs.clear();
     for (final entry in newQuizzes.entries) {
       await prefs.setStringList(entry.key, entry.value.map((map) => map.values.join('|')).toList());
     }
@@ -239,14 +236,6 @@ class _ResultsScreenState extends State<HistoryScreen> {
     );
   }
 
-  Color _getCardColor(String percentage) {
-    final double percent = double.tryParse(percentage) ?? 0.0;
-    if (percent >= 80) return Colors.green;
-    if (percent >= 50) return Colors.yellow;
-    return Colors.red;
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final sortedQuizzes = Map.fromEntries(
@@ -261,14 +250,12 @@ class _ResultsScreenState extends State<HistoryScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
           Positioned.fill(
             child: Image.asset(
               'assets/images/background home3.jpeg',
               fit: BoxFit.cover,
             ),
           ),
-          // Content
           Column(
             children: [
               Padding(
@@ -277,6 +264,14 @@ class _ResultsScreenState extends State<HistoryScreen> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green),
+                    ),
+                    focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                       borderSide: const BorderSide(color: Colors.green, width: 2.0),
                     ),
@@ -304,7 +299,7 @@ class _ResultsScreenState extends State<HistoryScreen> {
                     final totalQuestions = results.length;
                     final percentage = (totalQuestions > 0)
                         ? ((correctAnswers / totalQuestions) * 100).toStringAsFixed(0)
-                        : '0'; // Default to '0' if no questions are available
+                        : '0';
 
                     return GestureDetector(
                       onTap: () {
@@ -362,16 +357,22 @@ class _ResultsScreenState extends State<HistoryScreen> {
                 Navigator.of(context).pop();
                 _deleteAllQuizzes();
               },
-              child: const Text("Delete All",style: TextStyle(color: Colors.red),),
+              child: const Text("Delete All", style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel",style: TextStyle(color: Colors.grey),),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
-
           ],
         );
       },
     );
   }
+  Color _getCardColor(String percentage) {
+    final double percent = double.tryParse(percentage) ?? 0.0;
+    if (percent >= 80) return Colors.green;
+    if (percent >= 50) return Colors.yellow;
+    return Colors.red; // Default to red if percentage is below 50
+  }
+
 }
