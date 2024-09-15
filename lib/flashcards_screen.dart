@@ -118,7 +118,6 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
 
   String _generateUniqueRandomQuestion() {
     if (_usedIndices.length >= _questions.length) {
-      // If all questions have been used, reset _usedIndices
       _usedIndices.clear();
     }
 
@@ -175,7 +174,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   );
                 }
               },
-              child: const Text('Add',style: TextStyle(color: Colors.green),),
+              child: const Text('Add', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () {
@@ -194,11 +193,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 }
                 Navigator.of(context).pop();
               },
-              child: const Text('Random Generate',style: TextStyle(color: Colors.green),),
+              child: const Text('Random Generate', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel',style: TextStyle(color: Colors.red),),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -243,18 +242,17 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Save',style: TextStyle(color: Colors.green),),
+              child: const Text('Save', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel',style: TextStyle(color: Colors.red),),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
       },
     );
   }
-
 
   void _startQuiz() {
     showDialog(
@@ -273,11 +271,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   ),
                 );
               },
-              child: const Text('Start Quiz',style: TextStyle(color: Colors.green),),
+              child: const Text('Start Quiz', style: TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel',style: TextStyle(color: Colors.red),),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -292,6 +290,38 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
             card['answer']!.toLowerCase().contains(_searchQuery.toLowerCase());
       }).toList();
     });
+  }
+
+  void _showDeleteAllConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: const Text("Are you sure you want to delete all flashcards?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  flashcards.clear();
+                  _filteredFlashcards.clear();
+                  _saveFlashcards();
+                });
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All flashcards deleted')),
+                );
+              },
+              child: const Text('Delete All', style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -313,11 +343,22 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green, width: 2.0),
                     ),
                     labelText: 'Search',
-                    prefixIcon: const Icon(Icons.search),
+                    labelStyle: const TextStyle(color: Colors.green),
+                    prefixIcon: const Icon(Icons.search, color: Colors.green),
                     filled: true,
                   ),
+                  style: const TextStyle(color: Colors.white),
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value;
@@ -361,8 +402,8 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                       child: Container(
                         margin: const EdgeInsets.all(12.0),
                         decoration: BoxDecoration(
-                          color: Colors.green, // Flashcard color
-                          borderRadius: BorderRadius.circular(20), // Rounded corners
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20),
                           boxShadow: const [
                             BoxShadow(
                               color: Colors.black26,
@@ -373,7 +414,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                         ),
                         child: ListTile(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20), // Ensure ListTile respects rounding
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           title: Text(
                             _filteredFlashcards[index]['question']!,
@@ -384,12 +425,9 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                             style: const TextStyle(color: Colors.white),
                           ),
                           onTap: () => _editFlashcard(index),
-                          tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent, // Transparent to show container color
+                          tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
                         ),
                       ),
-
-
-
                     );
                   },
                 ),
@@ -404,11 +442,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                       icon: const Icon(Icons.add_card),
                       label: const Text('Add Flashcard'),
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.green, backgroundColor: Colors.white, // Text color
+                        foregroundColor: Colors.green, backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        elevation: 5, // Shadow effect
+                        elevation: 5,
                       ),
                     ),
                     ElevatedButton.icon(
@@ -416,17 +454,26 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                       icon: const Icon(Icons.quiz),
                       label: const Text('Start Quiz'),
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.green, backgroundColor: Colors.white, // Text color
+                        foregroundColor: Colors.green, backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        elevation: 5, // Shadow effect
+                        elevation: 5,
                       ),
                     ),
                   ],
                 ),
               ),
             ],
+          ),
+          Positioned(
+            bottom: 80,
+            right: 12,
+            child: FloatingActionButton(
+              onPressed: _showDeleteAllConfirmation,
+              backgroundColor: Colors.red,
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
           ),
         ],
       ),

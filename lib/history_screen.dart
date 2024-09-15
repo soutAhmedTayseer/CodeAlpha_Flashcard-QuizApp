@@ -38,6 +38,7 @@ class _ResultsScreenState extends State<HistoryScreen> {
               'userAnswer': parts[1],
               'correctAnswer': parts[2],
               'result': parts[3],
+              'date': parts.length > 4 ? parts[4] : '', // Ensure date is safe
             };
           }).toList();
         }
@@ -112,6 +113,7 @@ class _ResultsScreenState extends State<HistoryScreen> {
             'userAnswer': parts[1],
             'correctAnswer': parts[2],
             'result': parts[3],
+            'date': parts.length > 4 ? parts[4] : '', // Ensure date is safe
           };
         }).toList();
         counter++;
@@ -237,11 +239,23 @@ class _ResultsScreenState extends State<HistoryScreen> {
     );
   }
 
+  Color _getCardColor(String percentage) {
+    final double percent = double.tryParse(percentage) ?? 0.0;
+    if (percent >= 80) return Colors.green;
+    if (percent >= 50) return Colors.yellow;
+    return Colors.red;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final sortedQuizzes = Map.fromEntries(
       _filteredQuizzes.entries.toList()
-        ..sort((a, b) => a.key.compareTo(b.key)),
+        ..sort((a, b) {
+          final dateA = DateTime.tryParse(a.value.first['date'] ?? '') ?? DateTime.now();
+          final dateB = DateTime.tryParse(b.value.first['date'] ?? '') ?? DateTime.now();
+          return dateA.compareTo(dateB);
+        }),
     );
 
     return Scaffold(
@@ -262,11 +276,13 @@ class _ResultsScreenState extends State<HistoryScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: 'Search',
-                    prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green, width: 2.0),
                     ),
+                    labelText: 'Search',
+                    labelStyle: const TextStyle(color: Colors.green),
+                    prefixIcon: const Icon(Icons.search, color: Colors.green),
                     filled: true,
                   ),
                 ),
@@ -283,6 +299,13 @@ class _ResultsScreenState extends State<HistoryScreen> {
                   itemCount: sortedQuizzes.keys.length,
                   itemBuilder: (context, index) {
                     final quizLabel = sortedQuizzes.keys.toList()[index];
+                    final results = sortedQuizzes[quizLabel] ?? [];
+                    final correctAnswers = results.where((result) => result['result'] == 'correct').length;
+                    final totalQuestions = results.length;
+                    final percentage = (totalQuestions > 0)
+                        ? ((correctAnswers / totalQuestions) * 100).toStringAsFixed(0)
+                        : '0'; // Default to '0' if no questions are available
+
                     return GestureDetector(
                       onTap: () {
                         if (!_isSelecting) {
@@ -293,19 +316,15 @@ class _ResultsScreenState extends State<HistoryScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        color: _selectedQuizzes.contains(quizLabel)
-                            ? Colors.blueAccent
-                            : Colors.white,
+                        color: _getCardColor(percentage),
                         child: Center(
                           child: Text(
                             quizLabel,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
-                              color: _selectedQuizzes.contains(quizLabel)
-                                  ? Colors.white
-                                  : Colors.black,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -315,6 +334,15 @@ class _ResultsScreenState extends State<HistoryScreen> {
                 ),
               ),
             ],
+          ),
+          Positioned(
+            bottom: 80,
+            right: 12,
+            child: FloatingActionButton(
+              onPressed: _showDeleteAllConfirmation,
+              backgroundColor: Colors.red,
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -330,16 +358,17 @@ class _ResultsScreenState extends State<HistoryScreen> {
           content: const Text("Are you sure you want to delete all quizzes?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteAllQuizzes();
               },
-              child: const Text("Delete All"),
+              child: const Text("Delete All",style: TextStyle(color: Colors.red),),
             ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel",style: TextStyle(color: Colors.grey),),
+            ),
+
           ],
         );
       },

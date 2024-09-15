@@ -54,9 +54,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green), // White border
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green), // White border when enabled
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(color: Colors.green, width: 2.0), // White border when focused
                     ),
                     labelText: 'Search',
-                    prefixIcon: const Icon(Icons.search),
+                    labelStyle: const TextStyle(color: Colors.green), // White label text
+                    prefixIcon: const Icon(Icons.search, color: Colors.green), // White icon
                     filled: true,
                   ),
                   onChanged: (value) {
@@ -121,7 +131,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   shadows: [
                                     Shadow(
                                       offset: Offset(2, 2), // Creates shadow in bottom-right direction
-                                      blurRadius: 3.0,      // Adds blur to the shadow
+                                      blurRadius: 3.0, // Adds blur to the shadow
                                       color: Colors.black54, // Shadow color
                                     ),
                                   ],
@@ -179,6 +189,45 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     }
   }
 
+  void _showStartQuizDialog(List<Question> questions) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Start Quiz'),
+          content: const Text('Are you sure you want to start the quiz?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MCQQuizScreen(
+                      questions: questions,
+                      category: widget.categoryTitle,
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                'Start Quiz',
+                style: TextStyle(color: Colors.green),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Close the dialog
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -215,24 +264,36 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       itemCount: questions.length,
                       itemBuilder: (context, index) {
                         final question = questions[index];
-                        return Card(
-                          margin: const EdgeInsets.all(8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  question.question,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text("Answer: ${question.correctAnswer}"),
-                              ],
+                        return Container(
+                          margin: const EdgeInsets.all(12.0),
+                          decoration: BoxDecoration(
+                            color: Colors.green, // Card background color
+                            borderRadius: BorderRadius.circular(20), // Rounded corners
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5,
+                                offset: Offset(0, 5), // Subtle shadow effect
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20), // Ensure ListTile respects rounding
                             ),
+                            title: Text(
+                              question.question,
+                              style: const TextStyle(
+                                color: Colors.black, // Text color
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            subtitle: Text(
+                              "Answer: ${question.correctAnswer}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            tileColor: Colors.transparent, // Transparent to show container color
                           ),
                         );
                       },
@@ -240,19 +301,18 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MCQQuizScreen(
-                              questions: questions,
-                              category: widget.categoryTitle, // Pass category here
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('Start Quiz'),
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showStartQuizDialog(questions),
+                      icon: const Icon(Icons.quiz),
+                      label: const Text('Start Quiz'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.green, // Text/icon color
+                        backgroundColor: Colors.white, // Button background color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8), // Rounded corners
+                        ),
+                        elevation: 5, // Shadow effect
+                      ),
                     ),
                   ),
                 ],
@@ -264,4 +324,3 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     );
   }
 }
-
