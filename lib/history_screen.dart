@@ -340,8 +340,8 @@ class _ResultsScreenState extends State<HistoryScreen> {
             right: 12,
             child: FloatingActionButton(
               onPressed: _showDeleteAllConfirmation,
-              backgroundColor: Colors.red,
-              child: const Icon(Icons.delete, color: Colors.white),
+              backgroundColor: Colors.white,
+              child: const Icon(Icons.delete, color: Colors.red),
             ),
           ),
         ],
