@@ -21,14 +21,14 @@ class _HomeLayoutState extends State<HomeLayout> {
         final appCubit = AppCubit.get(context);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: appCubit.currentTheme, // Use the themeData getter
+          theme: appCubit.currentTheme,
           home: Scaffold(
             appBar: AppBar(
               title: const Text(
                 'Quiz App',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
-              centerTitle: true, // Centers the title
+              centerTitle: true,
               actions: [
                 IconButton(
                   icon: Icon(appCubit.isDark ? Icons.brightness_3 : Icons.wb_sunny),
@@ -59,8 +59,8 @@ class _HomeLayoutState extends State<HomeLayout> {
             drawer: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
-                children: const <Widget>[
-                  DrawerHeader(
+                children: <Widget>[
+                  const DrawerHeader(
                     decoration: BoxDecoration(
                       color: Colors.green,
                     ),
@@ -72,9 +72,42 @@ class _HomeLayoutState extends State<HomeLayout> {
                       ],
                     ),
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.home, color: Colors.green),
+                    title: const Text('Home'),
+                    onTap: () {
+                      // Handle navigation to Home screen
+                      Navigator.pop(context); // Close the drawer
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.star, color: Colors.green),
+                    title: const Text('Favorites'),
+                    onTap: () {
+                      // Handle navigation to Favorites screen
+                      Navigator.pop(context); // Close the drawer
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.settings, color: Colors.green),
+                    title: const Text('Settings'),
+                    onTap: () {
+                      // Handle navigation to Settings screen
+                      Navigator.pop(context); // Close the drawer
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.info, color: Colors.green),
+                    title: const Text('About'),
+                    onTap: () {
+                      // Handle navigation to About screen
+                      Navigator.pop(context); // Close the drawer
+                    },
+                  ),
                 ],
               ),
             ),
+
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: appCubit.currentIndex,
               onTap: (index) => appCubit.changeIndex(index),
@@ -92,6 +125,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                   label: 'History',
                 ),
               ],
+              selectedItemColor: Colors.green, // Highlight selected index
             ),
           ),
         );
