@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ResultsScreen extends StatefulWidget {
-  const ResultsScreen({super.key});
+class HistoryScreen extends StatefulWidget {
+  const HistoryScreen({super.key});
 
   @override
   _ResultsScreenState createState() => _ResultsScreenState();
 }
 
-class _ResultsScreenState extends State<ResultsScreen> {
+class _ResultsScreenState extends State<HistoryScreen> {
   Map<String, List<Map<String, String>>> _quizzes = {};
   Map<String, List<Map<String, String>>> _filteredQuizzes = {};
   final TextEditingController _searchController = TextEditingController();
@@ -245,21 +245,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quiz Results'),
-        actions: [
-          if (_isSelecting) ...[
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: _showMultiDeleteConfirmation,
-            ),
-          ],
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: _showDeleteAllConfirmation,
-          ),
-        ],
-      ),
+
       body: Column(
         children: [
           Padding(
@@ -270,7 +256,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                 labelText: 'Search',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(15),
                 ),
               ),
             ),

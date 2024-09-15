@@ -17,17 +17,66 @@ class _HomeLayoutState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+      ),
       body: BlocBuilder<AppCubit, AppStates>(
         builder: (context, state) {
           return IndexedStack(
             index: context.read<AppCubit>().currentIndex,
             children: [
-               FlashcardsScreen(),
-               CategoriesScreen(), // Your new screen
-               const ResultsScreen(),
+              FlashcardsScreen(),
+              CategoriesScreen(),
+               const HistoryScreen(),
             ],
           );
         },
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.orange,
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.settings, size: 40, color: Colors.white),
+                  SizedBox(width: 16),
+                  Text('Settings', style: TextStyle(fontSize: 24, color: Colors.white)),
+                ],
+              ),
+            ),
+            // ListTile(
+            //   leading: const Icon(Icons.account_circle),
+            //   title: const Text('Profile'),
+            //   onTap: () {
+            //     // Handle profile navigation
+            //   },
+            // ),
+            // ListTile(
+            //   leading: const Icon(Icons.notifications),
+            //   title: const Text('Notifications'),
+            //   onTap: () {
+            //     // Handle notifications navigation
+            //   },
+            // ),
+            // ListTile(
+            //   leading: const Icon(Icons.help),
+            //   title: const Text('Help'),
+            //   onTap: () {
+            //     // Handle help navigation
+            //   },
+            // ),
+            // ListTile(
+            //   leading: const Icon(Icons.info),
+            //   title: const Text('About'),
+            //   onTap: () {
+            //     // Handle about navigation
+            //   },
+            // ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: context.watch<AppCubit>().currentIndex,

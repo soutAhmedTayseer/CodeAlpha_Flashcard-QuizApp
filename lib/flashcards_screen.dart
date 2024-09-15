@@ -331,29 +331,17 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hello There !'),
-        actions: [
-          if (_selectedIndices.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: _deleteSelectedFlashcards,
-            ),
-          IconButton(
-            icon: const Icon(Icons.delete_sweep),
-            onPressed: _deleteAllFlashcards,
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 labelText: 'Search',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (value) {
                 setState(() {

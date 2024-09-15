@@ -36,17 +36,14 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categories'),
-      ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 labelText: 'Search',
                 prefixIcon: const Icon(Icons.search),
