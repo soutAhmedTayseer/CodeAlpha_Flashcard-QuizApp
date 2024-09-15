@@ -175,7 +175,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   );
                 }
               },
-              child: const Text('Add'),
+              child: const Text('Add',style: TextStyle(color: Colors.green),),
             ),
             TextButton(
               onPressed: () {
@@ -194,11 +194,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 }
                 Navigator.of(context).pop();
               },
-              child: const Text('Add Random'),
+              child: const Text('Random Generate',style: TextStyle(color: Colors.green),),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Cancel',style: TextStyle(color: Colors.red),),
             ),
           ],
         );
@@ -243,11 +243,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Save',style: TextStyle(color: Colors.green),),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Cancel',style: TextStyle(color: Colors.red),),
             ),
           ],
         );
@@ -255,34 +255,29 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
     );
   }
 
-  void _deleteSelectedFlashcards() {
-    if (_selectedIndices.isEmpty) return;
 
+  void _startQuiz() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Flashcards'),
-          content: const Text('Are you sure you want to delete the selected flashcards?'),
+          title: const Text('Start Quiz'),
+          content: const Text('Are you sure you want to start the quiz?'),
           actions: [
             TextButton(
               onPressed: () {
-                setState(() {
-                  final indicesToRemove = _selectedIndices.toList()..sort((a, b) => b.compareTo(a));
-                  for (var index in indicesToRemove) {
-                    flashcards.removeAt(index);
-                  }
-                  _saveFlashcards();
-                  _updateFilteredFlashcards();
-                  _selectedIndices.clear();
-                });
-                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TestScreen(flashcards: flashcards),
+                  ),
+                );
               },
-              child: const Text('Delete'),
+              child: const Text('Start Quiz',style: TextStyle(color: Colors.green),),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Cancel',style: TextStyle(color: Colors.red),),
             ),
           ],
         );
@@ -363,15 +358,38 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                         );
                       },
                       background: Container(color: Colors.red),
-                      child: Card(
-                        margin: const EdgeInsets.all(8.0),
+                      child: Container(
+                        margin: const EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                          color: Colors.green, // Flashcard color
+                          borderRadius: BorderRadius.circular(20), // Rounded corners
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              offset: Offset(0, 5),
+                            ),
+                          ],
+                        ),
                         child: ListTile(
-                          title: Text(_filteredFlashcards[index]['question']!),
-                          subtitle: Text(_filteredFlashcards[index]['answer']!),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // Ensure ListTile respects rounding
+                          ),
+                          title: Text(
+                            _filteredFlashcards[index]['question']!,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          subtitle: Text(
+                            _filteredFlashcards[index]['answer']!,
+                            style: const TextStyle(color: Colors.white),
+                          ),
                           onTap: () => _editFlashcard(index),
-                          tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
+                          tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent, // Transparent to show container color
                         ),
                       ),
+
+
+
                     );
                   },
                 ),
@@ -381,32 +399,29 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
+                    ElevatedButton.icon(
                       onPressed: _addFlashcard,
+                      icon: const Icon(Icons.add_card),
+                      label: const Text('Add Flashcard'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.green, backgroundColor: Colors.white, // Text color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
+                        elevation: 5, // Shadow effect
                       ),
-                      child: const Text('Add Flashcard'),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TestScreen(flashcards: flashcards),
-                          ),
-                        );
-                      },
+                    ElevatedButton.icon(
+                      onPressed: _startQuiz,
+                      icon: const Icon(Icons.quiz),
+                      label: const Text('Start Quiz'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.green, backgroundColor: Colors.white, // Text color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
+                        elevation: 5, // Shadow effect
                       ),
-                      child: const Text('Start Quiz'),
                     ),
                   ],
                 ),
@@ -439,6 +454,4 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
       });
     }
   }
-
-
 }

@@ -62,7 +62,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                 children: const <Widget>[
                   DrawerHeader(
                     decoration: BoxDecoration(
-                      color: Colors.orange,
+                      color: Colors.green,
                     ),
                     child: Row(
                       children: [
