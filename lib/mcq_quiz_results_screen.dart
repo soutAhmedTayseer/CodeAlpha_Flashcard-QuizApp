@@ -21,6 +21,17 @@ class ResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _saveQuizResults();
 
+    final double percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+    Color titleColor;
+
+    if (percentage >= 80) {
+      titleColor = Colors.green;
+    } else if (percentage >= 50) {
+      titleColor = Colors.orange;
+    } else {
+      titleColor = Colors.red;
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -38,10 +49,10 @@ class ResultScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   'Your Score: $score out of $totalQuestions',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: titleColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -62,7 +73,7 @@ class ResultScreen extends StatelessWidget {
                           title: Text(
                             'Question ${questionIndex + 1}: $questionText',
                             style: const TextStyle(
-                              color: Colors.white
+                                color: Colors.white
                             ),
                           ),
                           subtitle: Column(

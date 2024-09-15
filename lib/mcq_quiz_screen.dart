@@ -60,7 +60,6 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size and padding for responsiveness
     final screenSize = MediaQuery.of(context).size;
     final isSmallScreen = screenSize.width < 600;
 
@@ -77,6 +76,17 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
     }
 
     final options = _currentOptions;
+    final double progress = _remainingTime / 300;
+    final int _timeRemaining = _remainingTime;
+
+    Color timerColor;
+    if (_remainingTime < 60) {
+      timerColor = Colors.red;
+    } else if (_remainingTime < 180) {
+      timerColor = Colors.yellow;
+    } else {
+      timerColor = Colors.green;
+    }
 
     return Scaffold(
       body: Stack(
@@ -99,30 +109,32 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Timer on the left
-                        SizedBox(
-                          width: isSmallScreen ? 50 : 60,
-                          height: isSmallScreen ? 50 : 60,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              CircularProgressIndicator(
-                                value: _remainingTime / 300,
-                                backgroundColor: Colors.grey[700],
-                                color: Colors.orange,
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 70,
+                              height: 70,
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                backgroundColor: Colors.grey[300],
+                                valueColor: AlwaysStoppedAnimation<Color>(timerColor),
+                                strokeWidth: 8.0,
                               ),
-                              Center(
-                                child: Text(
-                                  '${(_remainingTime ~/ 60).toString().padLeft(2, '0')}:${(_remainingTime % 60).toString().padLeft(2, '0')}',
-                                  style: const TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),
-                                ),
+                            ),
+                            Text(
+                              '${_timeRemaining ~/ 60}:${(_timeRemaining % 60).toString().padLeft(2, '0')}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         const SizedBox(width: 16),
-                        // Category and Question Info
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,15 +142,15 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                               Text(
                                 widget.category,
                                 style: TextStyle(
-                                  color: Colors.orange,
-                                  fontSize: isSmallScreen ? 18 : 20,
+                                  color: Colors.white,
+                                  fontSize: isSmallScreen ? 16 : 18,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'Question ${_currentQuestionIndex + 1} of ${_shuffledQuestions.length}',
-                                style: const TextStyle(color: Colors.orange, fontSize: 16),
+                                style: const TextStyle(color: Colors.white, fontSize: 16),
                               ),
                             ],
                           ),
@@ -148,11 +160,11 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                   ),
                 ),
               ),
-              // Difficulty Container - Positioned under the first card
+              // Difficulty Container
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Align(
-                  alignment: Alignment.centerRight,  // Aligns the container to the right
+                  alignment: Alignment.centerRight,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30.0),
                     decoration: BoxDecoration(
@@ -177,7 +189,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                   ),
                 ),
               ),
-              // Centered Content area with scrollable questions and answers
+              // Centered Content area
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
@@ -197,7 +209,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                 style: TextStyle(
                                   fontSize: isSmallScreen ? 18 : 20,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.orange,
+                                  color: Colors.white,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -233,7 +245,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                     });
                                   },
                                 );
-                              }),
+                              }).toList(),
                             ],
                           ),
                         ),
@@ -263,9 +275,9 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[800],
+                                  foregroundColor: Colors.white, backgroundColor: Colors.grey[800], // White text color
                                 ),
-                                child: const Text('Previous', style: TextStyle(color: Colors.orange)),
+                                child: const Text('Previous'),
                               ),
                             ),
                           const SizedBox(width: 10),
@@ -282,13 +294,14 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                 _showSubmitConfirmation();
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey[800],
+                                foregroundColor: Colors.white, backgroundColor: _currentQuestionIndex < _shuffledQuestions.length - 1
+                                    ? Colors.grey[800] // Grey background for "Next" button
+                                    : Colors.green, // White text color
                               ),
                               child: Text(
                                 _currentQuestionIndex < _shuffledQuestions.length - 1
                                     ? 'Next'
                                     : 'Submit',
-                                style: const TextStyle(color: Colors.orange),
                               ),
                             ),
                           ),
@@ -367,7 +380,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: const Text('Cancel'),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
@@ -375,7 +388,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
               },
               child: const Text(
                 'Continue',
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: Colors.green),
               ),
             ),
           ],
@@ -396,14 +409,14 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _submitQuiz();
               },
-              child: const Text('Submit'),
+              child: const Text('Submit', style: TextStyle(color: Colors.green)),
             ),
           ],
         );
