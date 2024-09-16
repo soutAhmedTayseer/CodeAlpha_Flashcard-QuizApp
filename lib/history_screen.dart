@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -138,7 +139,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         return AlertDialog(
           title: Text(quizLabel),
           content: results.isEmpty
-              ? const Text('No results available.')
+              ? Text(tr('No results available.'))
               : SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,9 +148,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Text(
                     'Q: ${result['question']!}\n'
-                        'Your answer: ${result['userAnswer']!}\n'
-                        'Correct answer: ${result['correctAnswer']!}\n'
-                        'Result: ${result['result']!}\n',
+                        '${tr('Your answer')}: ${result['userAnswer']!}\n'
+                        '${tr('Correct answer')}: ${result['correctAnswer']!}\n'
+                        '${tr('Result')}: ${result['result']!}\n',
                     style: const TextStyle(fontSize: 16.0),
                   ),
                 );
@@ -159,7 +160,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Close"),
+              child: Text(tr("Close")),
             ),
             if (!_isSelecting) ...[
               TextButton(
@@ -167,7 +168,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   Navigator.of(context).pop();
                   _showDeleteConfirmation(quizLabel);
                 },
-                child: const Text("Delete Quiz"),
+                child: Text(tr("Delete Quiz")),
               ),
             ],
           ],
@@ -181,19 +182,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Confirm Deletion"),
-          content: const Text("Are you sure you want to delete this quiz?"),
+          title: Text(tr("Confirm Deletion")),
+          content: Text(tr("Are you sure you want to delete this quiz?")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel"),
+              child: Text(tr("Cancel")),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteQuizzes({quizLabel});
               },
-              child: const Text("Delete"),
+              child: Text(tr("Delete")),
             ),
           ],
         );
@@ -216,19 +217,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Confirm Deletion"),
-          content: const Text("Are you sure you want to delete the selected quizzes?"),
+          title: Text(tr("Confirm Deletion")),
+          content: Text(tr("Are you sure you want to delete the selected quizzes?")),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel"),
+              child: Text(tr("Cancel")),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteQuizzes(_selectedQuizzes);
               },
-              child: const Text("Delete"),
+              child: Text(tr("Delete")),
             ),
           ],
         );
@@ -265,19 +266,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.green),
+                      borderSide: BorderSide(color: Colors.green),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.green),
+                      borderSide: BorderSide(color: Colors.green),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.green, width: 2.0),
+                      borderSide: BorderSide(color: Colors.green, width: 2.0),
                     ),
-                    labelText: 'Search',
-                    labelStyle: const TextStyle(color: Colors.green),
-                    prefixIcon: const Icon(Icons.search, color: Colors.green),
+                    labelText: tr('Search'),
+                    labelStyle: TextStyle(color: Colors.green),
+                    prefixIcon: Icon(Icons.search, color: Colors.green),
                     filled: true,
                   ),
                 ),
@@ -349,30 +350,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Confirm Deletion"),
-          content: const Text("Are you sure you want to delete all quizzes?"),
+          title: Text(tr("Confirm Deletion")),
+          content: Text(tr("Are you sure you want to delete all quizzes?")),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _deleteAllQuizzes();
               },
-              child: const Text("Delete All", style: TextStyle(color: Colors.red)),
+              child: Text(tr("Delete All"), style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+              child: Text(tr("Cancel"), style: TextStyle(color: Colors.grey)),
             ),
           ],
         );
       },
     );
   }
+
   Color _getCardColor(String percentage) {
     final double percent = double.tryParse(percentage) ?? 0.0;
     if (percent >= 80) return Colors.green;
     if (percent >= 50) return Colors.yellow;
     return Colors.red; // Default to red if percentage is below 50
   }
-
 }

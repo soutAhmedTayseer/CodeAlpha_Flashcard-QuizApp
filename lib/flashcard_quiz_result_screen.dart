@@ -89,7 +89,7 @@ class FlashcardQuizResultScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Your Answer: ${userAnswer}',
+                                'Your Answer: $userAnswer',
                                 style: TextStyle(
                                   color: userAnswer == 'No Answer Given'
                                       ? Colors.red

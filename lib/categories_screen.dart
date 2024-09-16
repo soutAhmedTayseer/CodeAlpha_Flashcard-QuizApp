@@ -14,7 +14,7 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   final List<Map<String, dynamic>> categories = [
-    {'title': 'general_knowledge'.tr(), 'id': 9, 'image': 'assets/images/general knowledge.jpeg'},
+    {'title': 'general knowledge'.tr(), 'id': 9, 'image': 'assets/images/general knowledge.jpeg'},
     {'title': 'books'.tr(), 'id': 10, 'image': 'assets/images/books.jpeg'},
     {'title': 'film'.tr(), 'id': 11, 'image': 'assets/images/film.jpeg'},
     {'title': 'music'.tr(), 'id': 12, 'image': 'assets/images/music.jpeg'},
@@ -183,7 +183,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       List data = jsonDecode(response.body)['results'];
       return data.map((questionData) => Question.fromJson(questionData)).toList();
     } else {
-      throw Exception('failed_to_load_questions'.tr()); // Localized error message
+      throw Exception('failed to load questions'.tr()); // Localized error message
     }
   }
 
@@ -192,8 +192,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('start_quiz'.tr()), // Localized string
-          content: Text('confirm_start_quiz'.tr()), // Localized string
+          title: Text('start quiz'.tr()), // Localized string
+          content: Text('confirm start quiz'.tr()), // Localized string
           actions: [
             TextButton(
               onPressed: () {
@@ -209,7 +209,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                 );
               },
               child: Text(
-                'start_quiz'.tr(),
+                'start quiz'.tr(),
                 style: const TextStyle(color: Colors.green),
               ),
             ),
@@ -246,9 +246,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Center(child: Text('failed_to_load_questions'.tr())); // Localized error
+                return Center(child: Text('failed to load questions'.tr())); // Localized error
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('no_questions_available'.tr())); // Localized string
+                return Center(child: Text('no questions available'.tr())); // Localized string
               }
 
               final questions = snapshot.data!;
@@ -300,7 +300,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     child: ElevatedButton.icon(
                       onPressed: () => _showStartQuizDialog(questions),
                       icon: const Icon(Icons.quiz),
-                      label: Text('start_quiz'.tr()), // Localized button label
+                      label: Text('start quiz'.tr()), // Localized button label
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.green,
                         backgroundColor: Colors.white,

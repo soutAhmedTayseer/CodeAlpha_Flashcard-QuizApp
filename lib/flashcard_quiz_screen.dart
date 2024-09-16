@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'flashcard_quiz_result_screen.dart';
 
 class TestScreen extends StatefulWidget {
@@ -21,7 +20,6 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
   final Map<int, String> _userAnswers = {};
   final TextEditingController _answerController = TextEditingController();
   int _quizNumber = 1;
-  bool _isButtonPressed = false;
   late Timer _timer;
   int _timeRemaining = 1200;
   bool _hasSubmitted = false;

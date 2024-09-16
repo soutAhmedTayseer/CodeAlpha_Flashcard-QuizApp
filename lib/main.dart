@@ -15,9 +15,7 @@ void main() async {
       child: EasyLocalization(
         supportedLocales: const [
           Locale('en', ''), // English (United States)
-          Locale('es', ''), // Spanish (Spain)
           Locale('ar', ''), // Arabic (Saudi Arabia)
-          Locale('fr', ''), // French (France)
         ],
         path: 'assets/lang', // Path to localization files
         fallbackLocale: const Locale('en', ''), // Fallback locale

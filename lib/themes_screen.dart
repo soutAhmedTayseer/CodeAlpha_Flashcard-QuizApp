@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'cubit.dart';
 import 'states.dart';
 
@@ -41,7 +42,7 @@ class ThemesScreen extends StatelessWidget {
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
                   child: Text(
-                    appCubit.isDark ? 'Dark Theme' : 'Light Theme',
+                    appCubit.isDark ? tr('Dark Theme') : tr('Light Theme'),
                     key: ValueKey<bool>(appCubit.isDark),
                     style: TextStyle(
                       fontSize: 24,
@@ -61,7 +62,7 @@ class ThemesScreen extends StatelessWidget {
                 const SizedBox(height: 40),
                 // ListTile with a Switch
                 ListTile(
-                  title: const Text('Toggle Theme'),
+                  title: Text(tr('Toggle Theme')),
                   contentPadding: EdgeInsets.zero,
                   trailing: Switch(
                     value: appCubit.isDark,

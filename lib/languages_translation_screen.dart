@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_projects/cubit.dart';
 import 'package:flutter_projects/states.dart';
 
@@ -14,7 +15,7 @@ class LanguagesTranslationScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Select Language'),
+            title: Text(tr('Select Language')),  // Use `tr()` for translation
           ),
           body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -28,7 +29,7 @@ class LanguagesTranslationScreen extends StatelessWidget {
                     key: ValueKey<String>(appCubit.locale.languageCode),
                     children: [
                       ListTile(
-                        title: const Text('English'),
+                        title: Text(tr('English')),  // Use `tr()` for translation
                         onTap: () {
                           appCubit.changeLocale('en');
                         },
@@ -37,29 +38,11 @@ class LanguagesTranslationScreen extends StatelessWidget {
                             : null,
                       ),
                       ListTile(
-                        title: const Text('Arabic'),
+                        title: Text(tr('Arabic')),  // Use `tr()` for translation
                         onTap: () {
                           appCubit.changeLocale('ar');
                         },
                         trailing: appCubit.locale.languageCode == 'ar'
-                            ? const Icon(Icons.check, color: Colors.green)
-                            : null,
-                      ),
-                      ListTile(
-                        title: const Text('Spanish'),
-                        onTap: () {
-                          appCubit.changeLocale('es');
-                        },
-                        trailing: appCubit.locale.languageCode == 'es'
-                            ? const Icon(Icons.check, color: Colors.green)
-                            : null,
-                      ),
-                      ListTile(
-                        title: const Text('French'),
-                        onTap: () {
-                          appCubit.changeLocale('fr');
-                        },
-                        trailing: appCubit.locale.languageCode == 'fr'
                             ? const Icon(Icons.check, color: Colors.green)
                             : null,
                       ),
