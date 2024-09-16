@@ -127,28 +127,6 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
     );
   }
 
-  Future<bool> _onWillPop() async {
-    if (!_hasSubmitted && _timeRemaining > 0) {
-      return await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Are you sure?').tr(),
-          content: const Text('If you exit, your progress will be lost.').tr(),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No').tr(),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Yes').tr(),
-            ),
-          ],
-        ),
-      ) ?? false;
-    }
-    return true;
-  }
 
   void _storeCurrentAnswer() {
     _userAnswers[_currentQuestionIndex] = _answerController.text.trim();

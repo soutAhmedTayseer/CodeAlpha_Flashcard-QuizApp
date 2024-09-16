@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart'; // Import EasyLocalization
 
 class FlashcardsScreen extends StatefulWidget {
+  const FlashcardsScreen({super.key});
+
   @override
   _FlashcardsScreenState createState() => _FlashcardsScreenState();
 }
@@ -176,7 +178,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   );
                 }
               },
-              child: Text('Add'.tr(), style: TextStyle(color: Colors.green)),
+              child: Text('Add'.tr(), style: const TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () {
@@ -195,11 +197,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 }
                 Navigator.of(context).pop();
               },
-              child: Text('Random Generate'.tr(), style: TextStyle(color: Colors.green)),
+              child: Text('Random Generate'.tr(), style: const TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'.tr(), style: TextStyle(color: Colors.red)),
+              child: Text('Cancel'.tr(), style: const TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -244,11 +246,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Save'.tr(), style: TextStyle(color: Colors.green)),
+              child: Text('Save'.tr(), style: const TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'.tr(), style: TextStyle(color: Colors.red)),
+              child: Text('Cancel'.tr(), style: const TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -273,11 +275,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   ),
                 );
               },
-              child: Text('Start Quiz'.tr(), style: TextStyle(color: Colors.green)),
+              child: Text('Start Quiz'.tr(), style: const TextStyle(color: Colors.green)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'.tr(), style: TextStyle(color: Colors.red)),
+              child: Text('Cancel'.tr(), style: const TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -314,11 +316,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   SnackBar(content: Text('All flashcards deleted'.tr())),
                 );
               },
-              child: Text('Delete All'.tr(), style: TextStyle(color: Colors.red)),
+              child: Text('Delete All'.tr(), style: const TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'.tr(), style: TextStyle(color: Colors.grey)),
+              child: Text('Cancel'.tr(), style: const TextStyle(color: Colors.grey)),
             ),
           ],
         );
@@ -345,22 +347,22 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.green),
+                      borderSide: const BorderSide(color: Colors.green),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.green),
+                      borderSide: const BorderSide(color: Colors.green),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.green, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.green, width: 2.0),
                     ),
                     labelText: 'Search'.tr(),
-                    labelStyle: TextStyle(color: Colors.green),
-                    prefixIcon: Icon(Icons.search, color: Colors.green),
+                    labelStyle: const TextStyle(color: Colors.green),
+                    prefixIcon: const Icon(Icons.search, color: Colors.green),
                     filled: true,
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value;
@@ -406,7 +408,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black26,
                               blurRadius: 5,
@@ -420,11 +422,11 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                           ),
                           title: Text(
                             _filteredFlashcards[index]['question']!,
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                           subtitle: Text(
                             _filteredFlashcards[index]['answer']!,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                           onTap: () => _editFlashcard(index),
                           tileColor: isSelected ? Colors.blueGrey[300] : Colors.transparent,
@@ -441,7 +443,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   children: [
                     ElevatedButton.icon(
                       onPressed: _addFlashcard,
-                      icon: Icon(Icons.add_card),
+                      icon: const Icon(Icons.add_card),
                       label: Text('Add Flashcard'.tr()),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.green, backgroundColor: Colors.white,
@@ -453,7 +455,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                     ),
                     ElevatedButton.icon(
                       onPressed: _startQuiz,
-                      icon: Icon(Icons.quiz),
+                      icon: const Icon(Icons.quiz),
                       label: Text('Start Quiz'.tr()),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.green, backgroundColor: Colors.white,
@@ -474,7 +476,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
             child: FloatingActionButton(
               onPressed: _showDeleteAllConfirmation,
               backgroundColor: Colors.white,
-              child: Icon(Icons.delete, color: Colors.red),
+              child: const Icon(Icons.delete, color: Colors.red),
             ),
           ),
         ],

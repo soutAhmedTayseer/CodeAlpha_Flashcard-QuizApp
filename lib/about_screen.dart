@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:url_launcher/url_launcher.dart'; // Import for launching URLs
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   // Method to launch a URL
-  Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url); // Parse the URL string into a Uri object
-    if (await canLaunchUrl(uri)) {
-      // Check if the URL can be launched
-      await launchUrl(uri); // Launch the URL
-    } else {
-      throw 'Could not launch $url'; // Throw an error if the URL cannot be launched
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

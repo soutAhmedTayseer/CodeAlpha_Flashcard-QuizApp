@@ -78,7 +78,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
 
     final options = _currentOptions;
     final double progress = _remainingTime / 300;
-    final int _timeRemaining = _remainingTime;
+    final int timeRemaining = _remainingTime;
 
     Color timerColor;
     if (_remainingTime < 60) {
@@ -126,7 +126,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                               ),
                             ),
                             Text(
-                              '${_timeRemaining ~/ 60}:${(_timeRemaining % 60).toString().padLeft(2, '0')}',
+                              '${timeRemaining ~/ 60}:${(timeRemaining % 60).toString().padLeft(2, '0')}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -262,7 +262,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                     });
                                   },
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         ),
