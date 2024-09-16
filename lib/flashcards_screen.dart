@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/flashcard_quiz_screen.dart'; // Adjust the path if needed
 import 'package:shared_preferences/shared_preferences.dart';

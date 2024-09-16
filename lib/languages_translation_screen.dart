@@ -46,7 +46,7 @@ class LanguagesTranslationScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   Container(
                     width: double.infinity,
-                    constraints: BoxConstraints(maxWidth: 400), // Max width for better layout control
+                    constraints: const BoxConstraints(maxWidth: 400), // Max width for better layout control
                     child: Column(
                       children: [
                         ListTile(

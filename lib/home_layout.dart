@@ -64,10 +64,10 @@ class _HomeLayoutState extends State<HomeLayout> {
                 ),
                 IndexedStack(
                   index: appCubit.currentIndex,
-                  children: [
+                  children: const [
                     FlashcardsScreen(),
-                    const CategoriesScreen(),
-                    const HistoryScreen(),
+                    CategoriesScreen(),
+                    HistoryScreen(),
                   ],
                 ),
               ],

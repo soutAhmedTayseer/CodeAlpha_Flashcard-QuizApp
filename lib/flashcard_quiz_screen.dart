@@ -10,6 +10,7 @@ class TestScreen extends StatefulWidget {
   const TestScreen({super.key, required this.flashcards});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TestScreenState createState() => _TestScreenState();
 }
 
