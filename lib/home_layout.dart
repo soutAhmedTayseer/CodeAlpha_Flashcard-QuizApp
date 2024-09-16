@@ -3,8 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_projects/flashcards_screen.dart';
 import 'package:flutter_projects/categories_screen.dart';
 import 'package:flutter_projects/history_screen.dart';
-import 'package:flutter_projects/states.dart';
+import 'package:flutter_projects/profile_screen.dart';
+import 'package:flutter_projects/themes_screen.dart';
+import 'about_screen.dart';
 import 'cubit.dart';
+import 'languages_translation_screen.dart';
+import 'states.dart'; // Ensure this import is correct
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -16,7 +20,30 @@ class HomeLayout extends StatefulWidget {
 class _HomeLayoutState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppCubit, AppStates>(
+    return BlocConsumer<AppCubit, AppStates>(
+      listener: (context, state) {
+        if (state is AppNavigateToProfileState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
+        } else if (state is AppNavigateToThemesState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ThemesScreen()),
+          );
+        } else if (state is AppNavigateToLanguagesState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LanguagesTranslationScreen()),
+          );
+        } else if (state is AppNavigateToAboutState) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AboutScreen()),
+          );
+        }
+      },
       builder: (context, state) {
         final appCubit = AppCubit.get(context);
         return MaterialApp(
@@ -29,14 +56,6 @@ class _HomeLayoutState extends State<HomeLayout> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
               centerTitle: true,
-              actions: [
-                IconButton(
-                  icon: Icon(appCubit.isDark ? Icons.brightness_3 : Icons.wb_sunny),
-                  onPressed: () {
-                    appCubit.toggleTheme();
-                  },
-                ),
-              ],
             ),
             body: Stack(
               children: [
@@ -73,41 +92,36 @@ class _HomeLayoutState extends State<HomeLayout> {
                     ),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.home, color: Colors.green),
-                    title: const Text('Home'),
+                    leading: const Icon(Icons.person, color: Colors.green),
+                    title: const Text('Profile'),
                     onTap: () {
-                      // Handle navigation to Home screen
-                      Navigator.pop(context); // Close the drawer
+                      appCubit.navigateToProfile();
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.star, color: Colors.green),
-                    title: const Text('Favorites'),
+                    leading: const Icon(Icons.light_mode, color: Colors.green),
+                    title: const Text('Themes'),
                     onTap: () {
-                      // Handle navigation to Favorites screen
-                      Navigator.pop(context); // Close the drawer
+                      appCubit.navigateToThemes();
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.settings, color: Colors.green),
-                    title: const Text('Settings'),
+                    leading: const Icon(Icons.translate, color: Colors.green),
+                    title: const Text('Languages'),
                     onTap: () {
-                      // Handle navigation to Settings screen
-                      Navigator.pop(context); // Close the drawer
+                      appCubit.navigateToLanguages();
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.info, color: Colors.green),
                     title: const Text('About'),
                     onTap: () {
-                      // Handle navigation to About screen
-                      Navigator.pop(context); // Close the drawer
+                      appCubit.navigateToAbout();
                     },
                   ),
                 ],
               ),
             ),
-
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: appCubit.currentIndex,
               onTap: (index) => appCubit.changeIndex(index),
@@ -125,7 +139,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                   label: 'History',
                 ),
               ],
-              selectedItemColor: Colors.green, // Highlight selected index
+              selectedItemColor: Colors.green,
             ),
           ),
         );
