@@ -44,4 +44,25 @@ class AppCubit extends Cubit<AppStates> {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDark', isDark);
   }
+
+  // Drawer navigation methods
+  void navigateToProfile() {
+    emit(AppNavigateToProfileState());
+  }
+
+  void navigateToFavorites() {
+    emit(AppNavigateToFavoritesState());
+  }
+
+  void navigateToLanguages() {
+    emit(AppNavigateToLanguagesState());
+  }
+
+  void navigateToAbout() {
+    emit(AppNavigateToAboutState());
+  }
+
+  void navigateToThemes() {
+    emit(AppNavigateToThemesState());
+  }
 }

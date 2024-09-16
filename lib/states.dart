@@ -14,3 +14,13 @@ class AppIndexChangedState extends AppStates {
 }
 
 class AppThemeChangedState extends AppStates {}
+
+class AppNavigateToProfileState extends AppStates {}
+
+class AppNavigateToFavoritesState extends AppStates {}
+
+class AppNavigateToLanguagesState extends AppStates {}
+
+class AppNavigateToAboutState extends AppStates {}
+
+class AppNavigateToThemesState extends AppStates {}
