@@ -24,3 +24,7 @@ class AppNavigateToLanguagesState extends AppStates {}
 class AppNavigateToAboutState extends AppStates {}
 
 class AppNavigateToThemesState extends AppStates {}
+
+class AppLocaleChangedState extends AppStates {}
+
+class AppSettingsLoadedState extends AppStates {}

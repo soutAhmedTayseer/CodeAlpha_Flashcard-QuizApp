@@ -5,7 +5,7 @@ import 'package:flutter_projects/states.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState()) {
-    _loadTheme();
+    _loadSettings();
   }
 
   static AppCubit get(BuildContext context) => BlocProvider.of<AppCubit>(context);
@@ -17,6 +17,10 @@ class AppCubit extends Cubit<AppStates> {
   // Toggle between dark and light mode
   bool isDark = false;
 
+  // Current locale
+  Locale _locale = Locale('en'); // Default locale
+  Locale get locale => _locale;
+
   // Switch index in BottomNavigationBar
   void changeIndex(int index) {
     _currentIndex = index;
@@ -26,23 +30,33 @@ class AppCubit extends Cubit<AppStates> {
   // Toggle Theme Mode
   void toggleTheme() async {
     isDark = !isDark;
-    await _saveTheme();
+    await _saveSettings();
     emit(AppThemeChangedState());
   }
 
   ThemeData get currentTheme => isDark ? ThemeData.dark() : ThemeData.light();
 
-  // Load theme preference
-  Future<void> _loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    isDark = prefs.getBool('isDark') ?? false;
-    emit(AppThemeChangedState()); // Emit state to apply theme
+  // Change locale
+  void changeLocale(String languageCode) async {
+    _locale = Locale(languageCode);
+    await _saveSettings();
+    emit(AppLocaleChangedState());
   }
 
-  // Save theme preference
-  Future<void> _saveTheme() async {
+  // Load settings (theme and locale)
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    isDark = prefs.getBool('isDark') ?? false;
+    String languageCode = prefs.getString('locale') ?? 'en';
+    _locale = Locale(languageCode);
+    emit(AppSettingsLoadedState());
+  }
+
+  // Save settings (theme and locale)
+  Future<void> _saveSettings() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDark', isDark);
+    prefs.setString('locale', _locale.languageCode);
   }
 
   // Drawer navigation methods
