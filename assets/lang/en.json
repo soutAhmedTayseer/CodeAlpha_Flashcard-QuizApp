@@ -1,0 +1,22 @@
+{
+  "hello": "Hello",
+  "welcome": "Welcome to the app",
+  "general_knowledge": "General Knowledge",
+  "books": "Books",
+  "film": "Film",
+  "music": "Music",
+  "science": "Science",
+  "geography": "Geography",
+  "history": "History",
+  "politics": "Politics",
+  "sports": "Sports",
+  "animals": "Animals",
+  "search": "Search",
+  "failed_to_load_questions": "Failed to load questions",
+  "start_quiz": "Start Quiz",
+  "confirm_start_quiz": "Are you sure you want to start the quiz?",
+  "cancel": "Cancel",
+  "no_questions_available": "No questions available",
+  "answer": "Answer"
+
+}

@@ -1,0 +1,21 @@
+{
+  "hello": "Hola",
+  "welcome": "Bienvenido a la aplicación",
+  "general_knowledge": "Conocimientos Generales",
+  "books": "Libros",
+  "film": "Cine",
+  "music": "Música",
+  "science": "Ciencia",
+  "geography": "Geografía",
+  "history": "Historia",
+  "politics": "Política",
+  "sports": "Deportes",
+  "animals": "Animales",
+  "search": "Buscar",
+  "failed_to_load_questions": "No se pudieron cargar las preguntas",
+  "start_quiz": "Iniciar Quiz",
+  "confirm_start_quiz": "¿Estás seguro de que quieres comenzar el cuestionario?",
+  "cancel": "Cancelar",
+  "no_questions_available": "No hay preguntas disponibles",
+  "answer": "Respuesta"
+}

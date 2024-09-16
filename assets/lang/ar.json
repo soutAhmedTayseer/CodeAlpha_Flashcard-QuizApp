@@ -1,0 +1,21 @@
+{
+  "hello": "مرحبا",
+  "welcome": "مرحبًا بك في التطبيق",
+  "general_knowledge": "المعرفة العامة",
+  "books": "الكتب",
+  "film": "الافلام",
+  "music": "الموسيقى",
+  "science": "العلم",
+  "geography": "الجغرافيا",
+  "history": "التاريخ",
+  "politics": "السياسة",
+  "sports": "الرياضة",
+  "animals": "الحيوانات",
+  "search": "بحث",
+  "failed_to_load_questions": "فشل في تحميل الأسئلة",
+  "start_quiz": "ابدأ الاختبار",
+  "confirm_start_quiz": "هل أنت متأكد أنك تريد بدء الاختبار؟",
+  "cancel": "إلغاء",
+  "no_questions_available": "لا توجد أسئلة متاحة",
+  "answer": "الإجابة"
+}
