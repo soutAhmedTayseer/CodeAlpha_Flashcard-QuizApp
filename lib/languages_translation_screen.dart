@@ -14,45 +14,111 @@ class LanguagesTranslationScreen extends StatelessWidget {
         final appCubit = AppCubit.get(context);
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(tr('Select Language')),  // Use `tr()` for translation
-          ),
           body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // AnimatedSwitcher for language options
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 500),
-                  child: Column(
-                    key: ValueKey<String>(appCubit.locale.languageCode),
-                    children: [
-                      ListTile(
-                        title: Text(tr('English')),  // Use `tr()` for translation
-                        onTap: () {
-                          appCubit.changeLocale('en');
-                        },
-                        trailing: appCubit.locale.languageCode == 'en'
-                            ? const Icon(Icons.check, color: Colors.green)
-                            : null,
-                      ),
-                      ListTile(
-                        title: Text(tr('Arabic')),  // Use `tr()` for translation
-                        onTap: () {
-                          appCubit.changeLocale('ar');
-                        },
-                        trailing: appCubit.locale.languageCode == 'ar'
-                            ? const Icon(Icons.check, color: Colors.green)
-                            : null,
-                      ),
-                    ],
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  // AnimatedSwitcher for the language icon
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 800),
+                    child: Icon(
+                      Icons.language,
+                      key: ValueKey<String>(appCubit.locale.languageCode),
+                      size: 100,
+                      color: appCubit.isDark ? Colors.white : Colors.black,
+                    ),
+                    transitionBuilder: (widget, animation) {
+                      const begin = Offset(0.0, 0.1);
+                      const end = Offset.zero;
+                      const curve = Curves.easeInOut;
+                      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                      var offsetAnimation = animation.drive(tween);
+                      return SlideTransition(position: offsetAnimation, child: widget);
+                    },
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Text(
+                    tr('Choose your preferred language:'),
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: double.infinity,
+                    constraints: BoxConstraints(maxWidth: 400), // Max width for better layout control
+                    child: Column(
+                      children: [
+                        ListTile(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          tileColor: appCubit.locale.languageCode == 'en'
+                              ? Colors.green // Highlight selected language
+                              : appCubit.isDark ? Colors.grey[850] : Colors.grey[200],
+                          title: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              tr('English'),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                          onTap: () {
+                            _showRestartDialog(context, 'en');
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        ListTile(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          tileColor: appCubit.locale.languageCode == 'ar'
+                              ? Colors.green // Highlight selected language
+                              : appCubit.isDark ? Colors.grey[850] : Colors.grey[200],
+                          title: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              tr('Arabic'),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ),
+                          onTap: () {
+                            _showRestartDialog(context, 'ar');
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           backgroundColor: appCubit.isDark ? Colors.black : Colors.white,
+        );
+      },
+    );
+  }
+
+  void _showRestartDialog(BuildContext context, String languageCode) {
+    final appCubit = AppCubit.get(context);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(tr('Language Change')),
+          content: Text(tr('To apply the language changes, please restart the app.')),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                appCubit.changeLocale(languageCode);
+              },
+              child: Text(tr('OK')),
+            ),
+          ],
         );
       },
     );

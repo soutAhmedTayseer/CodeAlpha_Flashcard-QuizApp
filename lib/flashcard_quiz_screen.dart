@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import localization
 import 'flashcard_quiz_result_screen.dart';
 
 class TestScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
   final TextEditingController _answerController = TextEditingController();
   int _quizNumber = 1;
   late Timer _timer;
-  int _timeRemaining = 1200;
+  int _timeRemaining = 600;
   bool _hasSubmitted = false;
 
   @override
@@ -131,16 +132,16 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
       return await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Are you sure?'),
-          content: const Text('If you exit, your progress will be lost.'),
+          title: const Text('Are you sure?').tr(),
+          content: const Text('If you exit, your progress will be lost.').tr(),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No'),
+              child: const Text('No').tr(),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Yes'),
+              child: const Text('Yes').tr(),
             ),
           ],
         ),
@@ -184,14 +185,14 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Submit Quiz'),
-          content: const Text('Are you sure you want to submit the quiz?'),
+          title: const Text('Submit Quiz').tr(),
+          content: const Text('Are you sure you want to submit the quiz?').tr(),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)).tr(),
             ),
             TextButton(
               onPressed: () {
@@ -199,7 +200,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
                 _submitAnswer();
                 _navigateToResultScreen();
               },
-              child: const Text('Submit', style: TextStyle(color: Colors.green)),
+              child: const Text('Submit', style: TextStyle(color: Colors.green)).tr(),
             ),
           ],
         );
@@ -213,21 +214,33 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
     final isSmallScreen = screenSize.width < 600;
 
     if (_flashcards.isEmpty) {
-      return const Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Text(
-            'No flashcards available',
-            style: TextStyle(color: Colors.orange, fontSize: 20),
-          ),
+      return Scaffold(
+        body: Stack(
+          children: [
+            // Background image
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/q2.jpeg',
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Centered content
+            Center(
+              child: const Text(
+                'No flashcards available',
+                style: TextStyle( fontSize: 20),
+              ).tr(),
+            ),
+          ],
         ),
       );
     }
 
+
     final currentCard = _flashcards[_currentQuestionIndex];
     final question = currentCard['question']!;
 
-    double progress = _timeRemaining / 1200;
+    double progress = _timeRemaining / 600;
 
     Color timerColor;
     if (_timeRemaining < 60) {
@@ -251,7 +264,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
             children: [
               // Timer and Quiz Info Card
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding:  const EdgeInsets.all(8.0),
                 child: Card(
                   color: Colors.grey[800],
                   elevation: 4,
@@ -289,18 +302,40 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Quiz $_quizNumber',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: isSmallScreen ? 16 : 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Quiz',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: isSmallScreen ? 16 : 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ).tr(),
+                                  const SizedBox(width: 10),
+                                  Text('$_quizNumber'),
+                                ],
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                'Question ${_currentQuestionIndex + 1} of ${_flashcards.length}',
-                                style: const TextStyle(color: Colors.white, fontSize: 16),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'Question',
+                                    style: TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                  Text(
+                                    ' ${_currentQuestionIndex + 1} ',
+                                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                  const Text(
+                                    'of',
+                                    style: TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                  Text(
+                                    ' ${_flashcards.length} ',
+                                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                ],
                               ),
                             ],
                           ),
@@ -314,7 +349,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
+                    padding:  const EdgeInsets.all(16.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -343,12 +378,12 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
                           color: Colors.grey[800],
                           elevation: 4,
                           child: Padding(
-                            padding: const EdgeInsets.all(20.0),
+                            padding:  const EdgeInsets.all(20.0),
                             child: TextField(
                               controller: _answerController,
-                              decoration: const InputDecoration(
-                                labelText: 'Your Answer',
-                                labelStyle: TextStyle(color: Colors.white),
+                              decoration:   InputDecoration(
+                                labelText: 'Your Answer'.tr(),
+                                labelStyle: const TextStyle(color: Colors.white),
                               ),
                               onChanged: (value) => _userAnswers[_currentQuestionIndex] = value,
                               textAlign: TextAlign.center,
@@ -382,7 +417,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white, backgroundColor: Colors.grey[800], // White text color
                                 ),
-                                child: const Text('Previous'),
+                                child: const Text('Previous').tr(),
                               ),
                             ),
                           const SizedBox(width: 10),
@@ -398,7 +433,7 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
                                 _currentQuestionIndex < _flashcards.length - 1
                                     ? 'Next'
                                     : 'Submit',
-                              ),
+                              ).tr(),
                             ),
                           ),
                         ],

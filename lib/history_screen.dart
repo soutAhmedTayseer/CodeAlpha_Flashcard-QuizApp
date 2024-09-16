@@ -101,7 +101,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final newQuizzes = <String, List<Map<String, String>>>{};
     int counter = 1;
 
-    for (final key in keys.where((key) => key.startsWith('Quiz '))) {
+    for (final key in keys.where((key) => key.startsWith('Quiz'))) {
       final results = prefs.getStringList(key);
       if (results != null) {
         final newKey = 'Quiz $counter';
@@ -160,7 +160,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr("Close")),
+              child: Text(tr("Close"), style: const TextStyle(color: Colors.grey)),
             ),
             if (!_isSelecting) ...[
               TextButton(
@@ -168,7 +168,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   Navigator.of(context).pop();
                   _showDeleteConfirmation(quizLabel);
                 },
-                child: Text(tr("Delete Quiz")),
+                child: Text(tr("Delete Quiz"), style: const TextStyle(color: Colors.red)),
               ),
             ],
           ],
@@ -202,49 +202,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
   }
 
-  void _toggleSelection(String quizLabel) {
-    setState(() {
-      if (_selectedQuizzes.contains(quizLabel)) {
-        _selectedQuizzes.remove(quizLabel);
-      } else {
-        _selectedQuizzes.add(quizLabel);
-      }
-    });
-  }
-
-  void _showMultiDeleteConfirmation() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(tr("Confirm Deletion")),
-          content: Text(tr("Are you sure you want to delete the selected quizzes?")),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr("Cancel")),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteQuizzes(_selectedQuizzes);
-              },
-              child: Text(tr("Delete")),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Sort quizzes by date
     final sortedQuizzes = Map.fromEntries(
       _filteredQuizzes.entries.toList()
         ..sort((a, b) {
           final dateA = DateTime.tryParse(a.value.first['date'] ?? '') ?? DateTime.now();
           final dateB = DateTime.tryParse(b.value.first['date'] ?? '') ?? DateTime.now();
-          return dateA.compareTo(dateB);
+          return dateB.compareTo(dateA); // Descending order
         }),
     );
 
@@ -266,19 +232,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.green),
+                      borderSide: const BorderSide(color: Colors.green),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.green),
+                      borderSide: const BorderSide(color: Colors.green),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.green, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.green, width: 2.0),
                     ),
                     labelText: tr('Search'),
-                    labelStyle: TextStyle(color: Colors.green),
-                    prefixIcon: Icon(Icons.search, color: Colors.green),
+                    labelStyle: const TextStyle(color: Colors.green),
+                    prefixIcon: const Icon(Icons.search, color: Colors.green),
                     filled: true,
                   ),
                 ),
@@ -295,12 +261,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   itemCount: sortedQuizzes.keys.length,
                   itemBuilder: (context, index) {
                     final quizLabel = sortedQuizzes.keys.toList()[index];
-                    final results = sortedQuizzes[quizLabel] ?? [];
-                    final correctAnswers = results.where((result) => result['result'] == 'correct').length;
-                    final totalQuestions = results.length;
-                    final percentage = (totalQuestions > 0)
-                        ? ((correctAnswers / totalQuestions) * 100).toStringAsFixed(0)
-                        : '0';
 
                     return GestureDetector(
                       onTap: () {
@@ -312,7 +272,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        color: _getCardColor(percentage),
                         child: Center(
                           child: Text(
                             quizLabel,
@@ -320,7 +279,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -358,22 +316,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 Navigator.of(context).pop();
                 _deleteAllQuizzes();
               },
-              child: Text(tr("Delete All"), style: TextStyle(color: Colors.red)),
+              child: Text(tr("Delete All"), style: const TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr("Cancel"), style: TextStyle(color: Colors.grey)),
+              child: Text(tr("Cancel"), style: const TextStyle(color: Colors.grey)),
             ),
           ],
         );
       },
     );
-  }
-
-  Color _getCardColor(String percentage) {
-    final double percent = double.tryParse(percentage) ?? 0.0;
-    if (percent >= 80) return Colors.green;
-    if (percent >= 50) return Colors.yellow;
-    return Colors.red; // Default to red if percentage is below 50
   }
 }

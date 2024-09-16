@@ -130,6 +130,7 @@
   "Delete": "Delete",
   "Are you sure you want to delete the selected quizzes?": "Are you sure you want to delete the selected quizzes?",
   "Are you sure you want to delete all quizzes?": "Are you sure you want to delete all quizzes?",
+  "Are you sure you want to submit the quiz?" : "'Are you sure you want to submit the quiz?'",
   "Your answer": "Your answer",
   "Correct answer": "Correct answer",
   "Result": "Result",
@@ -143,9 +144,24 @@
   "Profile": "Profile",
   "Themes": "Themes",
   "Languages": "Languages",
+  "To apply the language changes, please restart the app.": "لكي تري اللغة الجديدة اعد تشغيل التطبيق",
+  "Language Change": "تغيير اللغة",
   "About": "About",
   "Flashcards": "Flashcards",
   "Categories": "Categories",
-  "History": "History"
+  "History": "History",
+  "About This App": "About This App",
+  "Main Goal:": "Main Goal:",
+  "Welcome to the Quiz App! Our app is designed to help you study effectively by creating and managing flashcards. You can add flashcards with questions and answers, and quiz yourself to reinforce your learning. The app tracks your quiz scores to help you monitor your progress.": "Welcome to the Quiz App! Our app is designed to help you study effectively by creating and managing flashcards. You can add flashcards with questions and answers, and quiz yourself to reinforce your learning. The app tracks your quiz scores to help you monitor your progress.",
+  "Advanced Features:": "Advanced Features:",
+  "Beyond basic flashcard functionality, the app offers advanced features such as creating quizzes from lists and utilizing APIs for enhanced data management. You can also explore different categories with new questions each time you quiz yourself, ensuring a fresh and engaging study experience.": "Beyond basic flashcard functionality, the app offers advanced features such as creating quizzes from lists and utilizing APIs for enhanced data management. You can also explore different categories with new questions each time you quiz yourself, ensuring a fresh and engaging study experience.",
+  "The app also supports language swapping between Arabic and English, as well as a dark and light mode to suit your preferences. The simple and user-friendly interface makes it easy to navigate and customize your study sessions.": "The app also supports language swapping between Arabic and English, as well as a dark and light mode to suit your preferences. The simple and user-friendly interface makes it easy to navigate and customize your study sessions.",
+  "Credits": "Credits",
+  "Developed by Ahmed Tayseer\nUndergraduate Software Developer": "Developed by Ahmed Tayseer\nUndergraduate Software Developer",
+  "Contact Us": "Contact Us",
+  "For any questions, feedback, or support, please reach out to us at:\nahmedtayseer424@gmail.com": "For any questions, feedback, or support, please reach out to us at:\nahmedtayseer424@gmail.com",
+  "Version": "Version",
+  "1.0.0": "1.0.0"
 }
+
 

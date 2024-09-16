@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/mcq_quiz_results_screen.dart';
 import 'dart:async';
@@ -148,9 +149,25 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                'Question ${_currentQuestionIndex + 1} of ${_shuffledQuestions.length}',
-                                style: const TextStyle(color: Colors.white, fontSize: 16),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'Question',
+                                    style: TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                  Text(
+                                    ' ${_currentQuestionIndex + 1} ',
+                                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                  const Text(
+                                    'of',
+                                    style: TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                   Text(
+                                    '${_shuffledQuestions.length}',
+                                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                                  ).tr(),
+                                ],
                               ),
                             ],
                           ),
@@ -237,7 +254,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                         _selectedAnswers[_currentQuestionIndex] = value;
                                       });
                                     },
-                                    activeColor: Colors.orange,
+                                    activeColor: Colors.green,
                                   ),
                                   onTap: () {
                                     setState(() {
@@ -277,7 +294,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white, backgroundColor: Colors.grey[800], // White text color
                                 ),
-                                child: const Text('Previous'),
+                                child:  Text('Previous'.tr()),
                               ),
                             ),
                           const SizedBox(width: 10),
@@ -300,8 +317,8 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
                               ),
                               child: Text(
                                 _currentQuestionIndex < _shuffledQuestions.length - 1
-                                    ? 'Next'
-                                    : 'Submit',
+                                    ? 'Next'.tr()
+                                    : 'Submit'.tr(),
                               ),
                             ),
                           ),
@@ -325,7 +342,7 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
   }
 
   Color _getDifficultyColor(String difficulty) {
-    switch (difficulty.toLowerCase()) {
+    switch (difficulty.toLowerCase().tr()) {
       case 'easy':
         return Colors.green;
       case 'medium':
@@ -364,59 +381,26 @@ class _MCQQuizScreenState extends State<MCQQuizScreen> {
     );
   }
 
-  Future<bool> _onWillPop() async {
-    return (await _showExitConfirmation()) ?? false;
-  }
-
-  Future<bool?> _showExitConfirmation() {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Exit Quiz'),
-          content: const Text('If you exit now, your answers will not be saved. Do you want to continue?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: const Text(
-                'Continue',
-                style: TextStyle(color: Colors.green),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showSubmitConfirmation() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Submit Quiz'),
-          content: const Text('Are you sure you want to submit the quiz?'),
+          title:  Text('Submit Quiz'.tr()),
+          content:  Text('Are you sure you want to submit the quiz?'.tr()),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
+              child:  Text('Cancel'.tr(), style: const TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 _submitQuiz();
               },
-              child: const Text('Submit', style: TextStyle(color: Colors.green)),
+              child:  Text('Submit'.tr(), style: const TextStyle(color: Colors.green)),
             ),
           ],
         );

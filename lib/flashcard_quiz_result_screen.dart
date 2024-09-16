@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart'; // Import localization
 
 class FlashcardQuizResultScreen extends StatelessWidget {
   final int score;
   final List<Map<String, String>> results;
 
   const FlashcardQuizResultScreen({
-    Key? key,
+    super.key,
     required this.score,
     required this.results,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class FlashcardQuizResultScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          // Background image
           Positioned.fill(
             child: Image.asset(
               'assets/images/q2.jpeg', // Update with your image asset path
@@ -49,14 +51,42 @@ class FlashcardQuizResultScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Center(
-                      child: Text(
-                        'Your Score: $score out of $totalQuestions',
-                        style: TextStyle(
-                          fontSize: isSmallScreen ? 24 : 28,
-                          fontWeight: FontWeight.bold,
-                          color: scoreColor,
-                        ),
-                        textAlign: TextAlign.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Your Score'.tr(),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: scoreColor,
+                            ),
+                          ),
+                          Text(
+                            ': $score '.tr(),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: scoreColor,
+                            ),
+                          ),
+                          Text(
+                            'out of'.tr(),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: scoreColor,
+                            ),
+                          ),
+                          Text(
+                            ' $totalQuestions'.tr(),
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: scoreColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -71,42 +101,76 @@ class FlashcardQuizResultScreen extends StatelessWidget {
                       final String userAnswer = result['userAnswer'] ?? 'No Answer Given';
                       final String correctAnswer = result['correctAnswer']!;
                       final String question = result['question']!;
-                      final bool isAnswerCorrect = userAnswer == correctAnswer;
+                      final bool isAnswerCorrect = userAnswer.trim().toLowerCase() == correctAnswer.trim().toLowerCase();
 
                       return Card(
                         color: Colors.grey[800],
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ListTile(
-                          title: Text(
-                            question,
-                            style: TextStyle(
-                              fontSize: isSmallScreen ? 16 : 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          title: Flexible(
+                            child: Text(
+                              question,
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 16 : 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Your Answer: $userAnswer',
-                                style: TextStyle(
-                                  color: userAnswer == 'No Answer Given'
-                                      ? Colors.red
-                                      : (isAnswerCorrect ? Colors.green : Colors.red),
-                                  fontSize: isSmallScreen ? 14 : 16,
-                                ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Your Answer:'.tr(),
+                                      style: TextStyle(
+                                        color: userAnswer == 'No Answer Given'
+                                            ? Colors.red
+                                            : (isAnswerCorrect ? Colors.green : Colors.red),
+                                        fontSize: isSmallScreen ? 14 : 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      userAnswer.tr(),
+                                      style: TextStyle(
+                                        color: userAnswer == 'No Answer Given'
+                                            ? Colors.red
+                                            : (isAnswerCorrect ? Colors.green : Colors.red),
+                                        fontSize: isSmallScreen ? 14 : 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Correct Answer: $correctAnswer',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: isSmallScreen ? 14 : 16,
-                                ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Correct Answer:'.tr(),
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: isSmallScreen ? 14 : 16,
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      " $correctAnswer".tr(),
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: isSmallScreen ? 14 : 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               if (userAnswer == 'No Answer Given')
                                 Text(
-                                  'Result: No Answer Given',
+                                  'Result: No Answer Given'.tr(),
                                   style: TextStyle(
                                     color: Colors.red,
                                     fontSize: isSmallScreen ? 14 : 16,

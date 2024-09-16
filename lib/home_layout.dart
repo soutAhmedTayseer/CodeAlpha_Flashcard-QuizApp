@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart'; // Ensure easy_locali
 import 'package:flutter_projects/flashcards_screen.dart';
 import 'package:flutter_projects/categories_screen.dart';
 import 'package:flutter_projects/history_screen.dart';
-import 'package:flutter_projects/profile_screen.dart';
 import 'package:flutter_projects/themes_screen.dart';
 import 'about_screen.dart';
 import 'cubit.dart';
@@ -23,12 +22,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppStates>(
       listener: (context, state) {
-        if (state is AppNavigateToProfileState) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ProfileScreen()),
-          );
-        } else if (state is AppNavigateToThemesState) {
+        if (state is AppNavigateToThemesState) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ThemesScreen()),
@@ -36,7 +30,8 @@ class _HomeLayoutState extends State<HomeLayout> {
         } else if (state is AppNavigateToLanguagesState) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LanguagesTranslationScreen()),
+            MaterialPageRoute(
+                builder: (context) => const LanguagesTranslationScreen()),
           );
         } else if (state is AppNavigateToAboutState) {
           Navigator.push(
@@ -53,8 +48,9 @@ class _HomeLayoutState extends State<HomeLayout> {
           home: Scaffold(
             appBar: AppBar(
               title: Text(
-                tr('Quiz App'),  // Use `tr()` for translation
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                tr('Quiz App'), // Use `tr()` for translation
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
               centerTitle: true,
             ),
@@ -70,7 +66,7 @@ class _HomeLayoutState extends State<HomeLayout> {
                   index: appCubit.currentIndex,
                   children: [
                     FlashcardsScreen(),
-                    CategoriesScreen(),
+                    const CategoriesScreen(),
                     const HistoryScreen(),
                   ],
                 ),
@@ -80,45 +76,40 @@ class _HomeLayoutState extends State<HomeLayout> {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(  // Remove const here
-                    decoration: BoxDecoration(
+                  DrawerHeader(
+                    // Remove const here
+                    decoration: const BoxDecoration(
                       color: Colors.green,
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.settings, size: 40, color: Colors.white),
-                        SizedBox(width: 16),
+                        const Icon(Icons.settings, size: 40, color: Colors.white),
+                        const SizedBox(width: 16),
                         Text(
-                          tr('Settings'),  // Apply `tr()` for translation
-                          style: const TextStyle(fontSize: 24, color: Colors.white),
+                          tr('Settings'), // Apply `tr()` for translation
+                          style: const TextStyle(
+                              fontSize: 24, color: Colors.white),
                         ),
                       ],
                     ),
                   ),
                   ListTile(
-                    leading: const Icon(Icons.person, color: Colors.green),
-                    title: Text(tr('Profile')),  // Use `tr()` for translation
-                    onTap: () {
-                      appCubit.navigateToProfile();
-                    },
-                  ),
-                  ListTile(
                     leading: const Icon(Icons.light_mode, color: Colors.green),
-                    title: Text(tr('Themes')),  // Use `tr()` for translation
+                    title: Text(tr('Themes')), // Use `tr()` for translation
                     onTap: () {
                       appCubit.navigateToThemes();
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.translate, color: Colors.green),
-                    title: Text(tr('Languages')),  // Use `tr()` for translation
+                    title: Text(tr('Languages')), // Use `tr()` for translation
                     onTap: () {
                       appCubit.navigateToLanguages();
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.info, color: Colors.green),
-                    title: Text(tr('About')),  // Use `tr()` for translation
+                    title: Text(tr('About')), // Use `tr()` for translation
                     onTap: () {
                       appCubit.navigateToAbout();
                     },
@@ -132,15 +123,15 @@ class _HomeLayoutState extends State<HomeLayout> {
               items: [
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.credit_card),
-                  label: tr('Flashcards'),  // Use `tr()` for translation
+                  label: tr('Flashcards'), // Use `tr()` for translation
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.workspace_premium_outlined),
-                  label: tr('Categories'),  // Use `tr()` for translation
+                  label: tr('Categories'), // Use `tr()` for translation
                 ),
                 BottomNavigationBarItem(
                   icon: const Icon(Icons.history),
-                  label: tr('History'),  // Use `tr()` for translation
+                  label: tr('History'), // Use `tr()` for translation
                 ),
               ],
               selectedItemColor: Colors.green,

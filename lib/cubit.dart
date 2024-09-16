@@ -18,7 +18,7 @@ class AppCubit extends Cubit<AppStates> {
   bool isDark = false;
 
   // Current locale
-  Locale _locale = Locale('en'); // Default locale
+  Locale _locale = const Locale('en'); // Default locale
   Locale get locale => _locale;
 
   // Switch index in BottomNavigationBar
@@ -34,7 +34,19 @@ class AppCubit extends Cubit<AppStates> {
     emit(AppThemeChangedState());
   }
 
-  ThemeData get currentTheme => isDark ? ThemeData.dark() : ThemeData.light();
+  ThemeData get currentTheme {
+    final colorScheme = isDark
+        ? ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.dark,
+    )
+        : ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.light,
+    );
+
+    return ThemeData.from(colorScheme: colorScheme);
+  }
 
   // Change locale
   void changeLocale(String languageCode) async {

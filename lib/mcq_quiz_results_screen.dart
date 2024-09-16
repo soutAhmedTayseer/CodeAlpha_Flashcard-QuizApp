@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,8 @@ class ResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _saveQuizResults();
 
-    final double percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+    final double percentage =
+        totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
     Color titleColor;
 
     if (percentage >= 80) {
@@ -47,14 +49,45 @@ class ResultScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 20),
-                Text(
-                  'Your Score: $score out of $totalQuestions',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: titleColor,
-                  ),
-                  textAlign: TextAlign.center,
+                Row(
+                  children: [
+                    Text(
+                      'Your Score'.tr(),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: titleColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      ': $score ',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: titleColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'out of'.tr(),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: titleColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      ' $totalQuestions ',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: titleColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 Expanded(
@@ -72,29 +105,61 @@ class ResultScreen extends StatelessWidget {
                         child: ListTile(
                           title: Text(
                             'Question ${questionIndex + 1}: $questionText',
-                            style: const TextStyle(
-                                color: Colors.white
-                            ),
+                            style: const TextStyle(color: Colors.white),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Your Answer: ${selectedAnswer ?? 'No selected answer'}',
-                                style: TextStyle(
-                                  color: selectedAnswer == correctAnswer
-                                      ? Colors.green // Set your answer color to green if correct
-                                      : selectedAnswer == null
-                                      ? Colors.red
-                                      : Colors.red, // Set your answer color to red if not correct
-                                ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Your Answer'.tr(),
+                                    style: TextStyle(
+                                      color: selectedAnswer == correctAnswer
+                                          ? Colors
+                                              .green // Set your answer color to green if correct
+                                          : selectedAnswer == null
+                                              ? Colors.red
+                                              : Colors
+                                                  .red, // Set your answer color to red if not correct
+                                    ),
+                                  ),
+                                  Text(
+                                    ': ${selectedAnswer ?? 'No selected answer'.tr()}',
+                                    style: TextStyle(
+                                      color: selectedAnswer == correctAnswer
+                                          ? Colors
+                                              .green // Set your answer color to green if correct
+                                          : selectedAnswer == null
+                                              ? Colors.red
+                                              : Colors
+                                                  .red, // Set your answer color to red if not correct
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                'Correct Answer: $correctAnswer',
-                                style: const TextStyle(
-                                  color: Colors.green, // Set correct answer color to green
-                                ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Correct Answer'.tr(),
+                                      style: const TextStyle(
+                                        color: Colors
+                                            .green, // Set correct answer color to green
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      ': $correctAnswer'.tr(),
+                                      style: const TextStyle(
+                                        color: Colors
+                                            .green,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
