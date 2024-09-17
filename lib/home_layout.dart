@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart'; // Ensure easy_localization is imported
-import 'package:flutter_projects/flashcards_screen.dart';
-import 'package:flutter_projects/categories_screen.dart';
-import 'package:flutter_projects/history_screen.dart';
+import 'package:flutter_projects/screens/flashcards_screen.dart';
+import 'package:flutter_projects/screens/categories_screen.dart';
+import 'package:flutter_projects/screens/history_screen.dart';
 import 'package:flutter_projects/themes_screen.dart';
-import 'about_screen.dart';
-import 'cubit.dart';
+import 'components/app_bar_widget.dart';
+import 'components/bottom_navbar_widget.dart';
+import 'components/drawer_widget.dart';
+import 'screens/about_screen.dart';
+import 'managment/cubit.dart';
 import 'languages_translation_screen.dart';
-import 'states.dart'; // Ensure this import is correct
+import 'managment/states.dart'; // Ensure this import is correct
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});
@@ -46,14 +49,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           debugShowCheckedModeBanner: false,
           theme: appCubit.currentTheme,
           home: Scaffold(
-            appBar: AppBar(
-              title: Text(
-                tr('Quiz App'), // Use `tr()` for translation
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              ),
-              centerTitle: true,
-            ),
+            appBar: AppBarWidget(title: tr('Quiz App')),
             body: Stack(
               children: [
                 Positioned.fill(
@@ -72,69 +68,14 @@ class _HomeLayoutState extends State<HomeLayout> {
                 ),
               ],
             ),
-            drawer: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  DrawerHeader(
-                    // Remove const here
-                    decoration: const BoxDecoration(
-                      color: Colors.green,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.settings, size: 40, color: Colors.white),
-                        const SizedBox(width: 16),
-                        Text(
-                          tr('Settings'), // Apply `tr()` for translation
-                          style: const TextStyle(
-                              fontSize: 24, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.light_mode, color: Colors.green),
-                    title: Text(tr('Themes')), // Use `tr()` for translation
-                    onTap: () {
-                      appCubit.navigateToThemes();
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.translate, color: Colors.green),
-                    title: Text(tr('Languages')), // Use `tr()` for translation
-                    onTap: () {
-                      appCubit.navigateToLanguages();
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.info, color: Colors.green),
-                    title: Text(tr('About')), // Use `tr()` for translation
-                    onTap: () {
-                      appCubit.navigateToAbout();
-                    },
-                  ),
-                ],
-              ),
+            drawer: DrawerWidget(
+              onThemesTap: appCubit.navigateToThemes,
+              onLanguagesTap: appCubit.navigateToLanguages,
+              onAboutTap: appCubit.navigateToAbout,
             ),
-            bottomNavigationBar: BottomNavigationBar(
+            bottomNavigationBar: BottomNavBarWidget(
               currentIndex: appCubit.currentIndex,
               onTap: (index) => appCubit.changeIndex(index),
-              items: [
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.credit_card),
-                  label: tr('Flashcards'), // Use `tr()` for translation
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.workspace_premium_outlined),
-                  label: tr('Categories'), // Use `tr()` for translation
-                ),
-                BottomNavigationBarItem(
-                  icon: const Icon(Icons.history),
-                  label: tr('History'), // Use `tr()` for translation
-                ),
-              ],
-              selectedItemColor: Colors.green,
             ),
           ),
         );

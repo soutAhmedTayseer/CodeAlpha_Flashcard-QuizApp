@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../components/background_widget.dart';
+import '../components/confirmation_dialog.dart';
+import '../components/quiz_card.dart';
+import '../components/quiz_results_dialog.dart';
+import '../components/searchbar_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -136,42 +141,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(quizLabel),
-          content: results.isEmpty
-              ? Text(tr('No results available.'))
-              : SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: results.map((result) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Text(
-                    'Q: ${result['question']!}\n'
-                        '${tr('Your answer')}: ${result['userAnswer']!}\n'
-                        '${tr('Correct answer')}: ${result['correctAnswer']!}\n'
-                        '${tr('Result')}: ${result['result']!}\n',
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr("Close"), style: const TextStyle(color: Colors.grey)),
-            ),
-            if (!_isSelecting) ...[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _showDeleteConfirmation(quizLabel);
-                },
-                child: Text(tr("Delete Quiz"), style: const TextStyle(color: Colors.red)),
-              ),
-            ],
-          ],
+        return QuizResultsDialog(
+          quizLabel: quizLabel,
+          results: results,
+          onDelete: () => _showDeleteConfirmation(quizLabel),
         );
       },
     );
@@ -181,22 +154,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(tr("Confirm Deletion")),
-          content: Text(tr("Are you sure you want to delete this quiz?")),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr("Cancel")),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteQuizzes({quizLabel});
-              },
-              child: Text(tr("Delete")),
-            ),
-          ],
+        return ConfirmationDialog(
+          title: tr("Confirm Deletion"),
+          content: tr("Are you sure you want to delete this quiz?"),
+          onConfirm: () {
+            Navigator.of(context).pop();
+            _deleteQuizzes({quizLabel});
+          },
+          onCancel: () => Navigator.of(context).pop(),
+        );
+      },
+    );
+  }
+
+  void _showDeleteAllConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ConfirmationDialog(
+          title: tr("Confirm Deletion"),
+          content: tr("Are you sure you want to delete all quizzes?"),
+          onConfirm: () {
+            Navigator.of(context).pop();
+            _deleteAllQuizzes();
+          },
+          onCancel: () => Navigator.of(context).pop(),
         );
       },
     );
@@ -204,7 +186,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Sort quizzes by date
     final sortedQuizzes = Map.fromEntries(
       _filteredQuizzes.entries.toList()
         ..sort((a, b) {
@@ -217,37 +198,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/background home3.jpeg',
-              fit: BoxFit.cover,
-            ),
-          ),
+          const BackgroundImage(imagePath: 'assets/images/background home3.jpeg'), // Use BackgroundImage
+
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.green),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.green),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: const BorderSide(color: Colors.green, width: 2.0),
-                    ),
-                    labelText: tr('Search'),
-                    labelStyle: const TextStyle(color: Colors.green),
-                    prefixIcon: const Icon(Icons.search, color: Colors.green),
-                    filled: true,
-                  ),
-                ),
+              CustomSearchBar(
+                controller: _searchController, // Provide controller to CustomSearchBar
+                onChanged: (value) {
+                  _filterQuizzes(); // Call filter method on text change
+                },
               ),
               Expanded(
                 child: GridView.builder(
@@ -262,27 +221,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   itemBuilder: (context, index) {
                     final quizLabel = sortedQuizzes.keys.toList()[index];
 
-                    return GestureDetector(
+                    return QuizCard(
+                      label: quizLabel,
                       onTap: () {
                         if (!_isSelecting) {
                           _showQuizResults(quizLabel);
                         }
                       },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            quizLabel,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
                     );
                   },
                 ),
@@ -300,31 +245,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showDeleteAllConfirmation() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(tr("Confirm Deletion")),
-          content: Text(tr("Are you sure you want to delete all quizzes?")),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteAllQuizzes();
-              },
-              child: Text(tr("Delete All"), style: const TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(tr("Cancel"), style: const TextStyle(color: Colors.grey)),
-            ),
-          ],
-        );
-      },
     );
   }
 }

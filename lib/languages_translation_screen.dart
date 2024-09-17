@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_projects/cubit.dart';
-import 'package:flutter_projects/states.dart';
+import 'package:flutter_projects/managment/cubit.dart';
+import 'package:flutter_projects/managment/states.dart';
 
 class LanguagesTranslationScreen extends StatelessWidget {
   const LanguagesTranslationScreen({super.key});

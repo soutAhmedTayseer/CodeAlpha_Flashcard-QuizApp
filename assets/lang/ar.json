@@ -171,13 +171,16 @@
   "History": "التاريخ",
   "Settings": "الاعدادات",
   "About This App": "حول هذا التطبيق",
-  "Main Goal:": "الهدف الرئيسي:",
-  "Welcome to the Quiz App! Our app is designed to help you study effectively by creating and managing flashcards. You can add flashcards with questions and answers, and quiz yourself to reinforce your learning. The app tracks your quiz scores to help you monitor your progress.": "مرحبًا بك في Quiz App! تم تصميم تطبيقنا لمساعدتك على الدراسة بفعالية من خلال إنشاء وإدارة البطاقات التعليمية. يمكنك إضافة بطاقات تعليمية تحتوي على أسئلة وإجابات، واختبار نفسك لتعزيز تعلمك. يتتبع التطبيق درجات اختباراتك لمساعدتك في مراقبة تقدمك.",
-  "Advanced Features:": "الميزات المتقدمة:",
+  "Main Goal": "الهدف الرئيسي:",
+  "Credits": "القائم بالعمل",
+  "Developed by Ahmed Tayseer\nUndergraduate Software Developer": "تم التطوير بواسطة احمد تيسير\n مطور برامج جامعي",
+  "Welcome to the Quiz App! Our app is designed to help you study effectively by creating and managing flashcards. You can add flashcards with questions and answers, and quiz yourself to reinforce your learning. The app tracks your quiz scores to help you monitor your progress.": "مرحبًا بك في تطبيق الاختبارات! تم تصميم تطبيقنا لمساعدتك على الدراسة بفعالية من خلال إنشاء وإدارة البطاقات التعليمية. يمكنك إضافة بطاقات تعليمية تحتوي على أسئلة وإجابات، واختبار نفسك لتعزيز تعلمك. يتتبع التطبيق درجات اختباراتك لمساعدتك في مراقبة تقدمك.",
+  "Advanced Features": "الميزات المتقدمة:",
   "Beyond basic flashcard functionality, the app offers advanced features such as creating quizzes from lists and utilizing APIs for enhanced data management. You can also explore different categories with new questions each time you quiz yourself, ensuring a fresh and engaging study experience.": "إلى جانب الوظائف الأساسية للبطاقات التعليمية، يقدم التطبيق ميزات متقدمة مثل إنشاء اختبارات من القوائم واستخدام واجهات برمجة التطبيقات (APIs) لإدارة البيانات بشكل متقدم. يمكنك أيضًا استكشاف فئات مختلفة مع أسئلة جديدة في كل مرة تختبر نفسك، مما يضمن تجربة دراسة جديدة وممتعة.",
   "The app also supports language swapping between Arabic and English, as well as a dark and light mode to suit your preferences. The simple and user-friendly interface makes it easy to navigate and customize your study sessions.": "يدعم التطبيق أيضًا التبديل بين اللغتين العربية والإنجليزية، وكذلك الوضع الليلي والنهاري ليناسب تفضيلاتك. الواجهة البسيطة وسهلة الاستخدام تجعل التنقل وتخصيص جلسات الدراسة أمراً سهلاً.",
   "Contact Us": "تواصل معنا",
   "For any questions, feedback, or support, please reach out to us at:\nahmedtayseer424@gmail.com": "لأي أسئلة أو ملاحظات أو دعم، يرجى التواصل معنا عبر:\nahmedtayseer424@gmail.com",
   "Version": "الإصدار",
-  "1.0.0": "1.0.0"
+  "1.0.0": "1.0.0",
+  "Confirm": "تأكيد"
 }
