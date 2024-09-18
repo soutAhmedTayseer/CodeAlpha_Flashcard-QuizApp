@@ -252,11 +252,10 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
       body: Stack(
         children: [
           const BackgroundImage(imagePath: 'assets/images/background home3.jpeg'), // Use BackgroundImage
-
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(0.0),
                 child: CustomSearchBar(
                   onChanged: (value) {
                     setState(() {

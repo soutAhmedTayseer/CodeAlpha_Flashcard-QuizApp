@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_projects/management/states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_projects/managment/states.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState()) {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_projects/components/start_quiz_dialog_widget.dart';
 import '../components/background_widget.dart';
-import '../mcq_questions.dart';
+import '../components/mcq_questions.dart';
 import 'package:http/http.dart' as http;
 
 

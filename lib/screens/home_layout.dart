@@ -4,14 +4,14 @@ import 'package:easy_localization/easy_localization.dart'; // Ensure easy_locali
 import 'package:flutter_projects/screens/flashcards_screen.dart';
 import 'package:flutter_projects/screens/categories_screen.dart';
 import 'package:flutter_projects/screens/history_screen.dart';
-import 'package:flutter_projects/themes_screen.dart';
-import 'components/app_bar_widget.dart';
-import 'components/bottom_navbar_widget.dart';
-import 'components/drawer_widget.dart';
-import 'screens/about_screen.dart';
-import 'managment/cubit.dart';
+import 'package:flutter_projects/screens/themes_screen.dart';
+import '../components/app_bar_widget.dart';
+import '../components/bottom_navbar_widget.dart';
+import '../components/drawer_widget.dart';
+import 'about_screen.dart';
+import '../management/cubit.dart';
 import 'languages_translation_screen.dart';
-import 'managment/states.dart'; // Ensure this import is correct
+import '../management/states.dart'; // Ensure this import is correct
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({super.key});

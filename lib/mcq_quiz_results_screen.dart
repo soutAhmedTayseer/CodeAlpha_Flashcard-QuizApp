@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'components/background_widget.dart';
+
 class ResultScreen extends StatelessWidget {
   final int score;
   final int totalQuestions;
@@ -37,12 +39,8 @@ class ResultScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/q2.jpeg',
-              fit: BoxFit.cover,
-            ),
-          ),
+          const BackgroundImage(imagePath: 'assets/images/q2.jpeg'), // Use BackgroundImage
+
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

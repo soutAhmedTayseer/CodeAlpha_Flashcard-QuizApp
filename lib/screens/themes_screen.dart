@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'managment/cubit.dart';
-import 'managment/states.dart';
+import 'package:flutter_projects/management/cubit.dart';
+import 'package:flutter_projects/management/states.dart';
+
 
 class ThemesScreen extends StatelessWidget {
   const ThemesScreen({super.key});

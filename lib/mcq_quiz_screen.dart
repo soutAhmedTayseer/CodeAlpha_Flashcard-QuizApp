@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/mcq_quiz_results_screen.dart';
 import 'dart:async';
-import 'mcq_questions.dart';
+import 'components/mcq_questions.dart';
 
 class MCQQuizScreen extends StatefulWidget {
   final List<Question> questions;
