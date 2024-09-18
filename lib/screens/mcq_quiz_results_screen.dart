@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'components/background_widget.dart';
+import '../components/background_widget.dart';
 
 class ResultScreen extends StatelessWidget {
   final int score;

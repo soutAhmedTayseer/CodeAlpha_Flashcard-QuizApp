@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../mcq_quiz_screen.dart';
+import '../screens/mcq_quiz_screen.dart';
 import 'mcq_questions.dart';
 
 // Dialog Widget

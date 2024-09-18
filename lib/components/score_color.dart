@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Helper function to get score color based on percentage
 Color getScoreColor(double percentage) {
   if (percentage >= 80) {
     return Colors.green;
